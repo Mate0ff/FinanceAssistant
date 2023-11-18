@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="pg-list">
+        <div class="inc-dt-container">
+            <div class="inc-date-container">
+                <div class="exp-content-section">
+                    <form method="POST" action="">
+                        {{ form.hidden_tag() }}
+                            <div class="form-group " id="exp-form-group">
+                                {% if form.date.errors %}
+                                    {{ form.date(class="form-control form-control-lg is-invalid") }}
+                                {% else %}
+                                    {{ form.date(class="form-control form-control-lg") }}
+                                {% endif %}
+                            </div>
+                            <script>
+                                document.getElementById('date-picker').addEventListener('change', function() {
+                                    this.form.submit();
+                                });
+                            </script>
+                    </form>
+                </div>
+            </div>
+            <div class="inc-title-container">
+                <h1 id="route-title">Income</h1>
+            </div>
+            <div class="inc-empty-container">
+            </div>
+        </div>
+        <div class="inc-plot-container">
+            <div id="inc-plot1">
+                <img src="{{ url_for('static', filename='plot.png') }}" width="300" height="300">
+            </div>
+            <div id="inc-plot2">
+                <img src="{{ url_for('static', filename='plot.png') }}" width="300" height="300">
+            </div>
+        </div>
+        <div class="inc-btn-container">
+            <button type="button" class="inc-btn" style="width: 38px;height: 25px;" onclick="window.location.href = '/income/new';">Add</button>
+        </div>
+        <div class="inc-table-container">
+            <table class="inc-table" style="overflow-y: auto;">
+                <tr>
+                    <th class="inc-table-items" style="width: 60px;">Icon</th>
+                    <th class="inc-table-items" style="width: 170px;">Name</th>
+                    <th class="inc-table-items" style="width: 170px;">Category</th>
+                    <th class="inc-table-items" style="width: 250px;"></th>
+                    <th class="inc-table-items" style="width: 170px;">Date</th>
+                    <th class="inc-table-items" style="width: 170px;">Amount</th>
+                    <th class="inc-table-items" style="width: 300px;">Note</th>
+                    <th class="inc-table-items" style="width: 100px;"></th>
+                </tr>
+                {% for income in incomes %}
+                <tr>
+                    <td class="inc-table-items" style="width: 60px;"><img src="{{ url_for('static', filename='inc_icons/' + income.category.name.lower() +'.png') }}" width="30" height="30"></td>
+                    <td class="inc-table-items" style="width: 170px;">{{ income.name }}</td>
+                    <td class="inc-table-items" style="width: 170px;">{{ income.category.name }}</td>
+                    <td class="inc-table-items" style="width: 250px;"></td>
+                    <td class="inc-table-items" style="width: 170px;">{{ income.date.strftime('%d-%m-%Y') }}</td>
+                    <td class="inc-table-items" style="width: 170px;color: rgb(63, 148, 91); font-weight: bold;">+{% if income.amount == income.amount|float|int %}{{ income.amount|int }}{% else %}{{ income.amount }}{% endif %}$</td>
+                    <td class="inc-table-items" style="width: 300px;text-align: left;">{{ income.note }}</td>
+                    <td class="inc-table-items" style="width: 100px;">
+                        <div class="button-container" style="justify-content: right;">
+                            <a href="{{ url_for('update_income', income_id=income.id) }}">
+                                <button type="button" class="inc-btn" style="width: 36px;height: 25px;">Edit</button>
+                            </a>
+                            <form action="{{ url_for('delete_income', income_id=income.id) }}" method="POST">
+                                <input type="submit" class="inc-btn" style="height: 25px;" value="Delete">
+                            </form>
+                        </div>
+                    </td>
+                    
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div> 
+{% endblock content %}

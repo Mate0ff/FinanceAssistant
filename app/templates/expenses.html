@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="pg-list">
+        <div class="exp-dt-container">
+            <div class="exp-date-container">
+                <div class="exp-content-section">
+                    <form method="POST" action="">
+                        {{ form.hidden_tag() }}
+                            <div class="form-group " id="exp-form-group">
+                                {% if form.date.errors %}
+                                    {{ form.date(class="form-control form-control-exp is-invalid") }}
+                                {% else %}
+                                    {{ form.date(class="form-control form-control-lg") }}
+                                {% endif %}
+                            </div>
+                            <script>
+                                document.getElementById('date-picker').addEventListener('change', function() {
+                                    this.form.submit();
+                                });
+                            </script>
+                    </form>
+                </div>
+            </div>
+            <div class="exp-title-container">
+                <h1 id="route-title">Expenses</h1>
+            </div>
+            <div class="exp-empty-container">
+            </div>
+        </div>
+        <div class="exp-plot-container">
+            <div id="exp-plot1">
+                {{ plot_div|safe }}
+            </div>
+            <div id="exp-plot2">
+                <canvas id="lineChart" width="750" height="400"> </canvas>
+                <script>
+                    var ctx = document.getElementById("lineChart").getContext("2d");
+                    var lineChart = new Chart(ctx, { 
+                        type: "line", 
+                        data: { 
+                            lables: {{ lables | safe }},
+                            datasets: [
+                                {
+                                    label: "Data points",
+                                    data: {{ values | safe }},
+                                    fill: false,
+                                    borderColor: 'rgb(75, 192, 192)',
+                                    tension: 0.1
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: false
+                        }
+                    });
+                </script>
+            </div>
+        </div>
+        <div class="exp-btn-container">
+            <button type="button" class="exp-btn" style="width: 38px;height: 25px;" onclick="window.location.href = '/expenses/new';">Add</button>
+        </div>
+        <div class="exp-table-container">
+            <table class="exp-table" style="overflow-y: auto;">
+                <tr>
+                    <th class="exp-table-items" style="width: 60px;">Icon</th>
+                    <th class="exp-table-items" style="width: 150px;">Name</th>
+                    <th class="exp-table-items" style="width: 150px;">Category</th>
+                    <th class="exp-table-items" style="width: 100px;">Type</th>
+                    <th class="exp-table-items" style="width: 150px;">Limit</th>
+                    <th class="exp-table-items" style="width: 150px;">Date</th>
+                    <th class="exp-table-items" style="width: 150px;">Amount</th>
+                    <th class="exp-table-items" style="width: 320px;">Note</th>
+                    <th class="exp-table-items" style="width: 100px;"></th>
+                </tr>
+                {% for expense in expenses %}
+                <tr>
+                    <td class="exp-table-items" style="width: 60px;"><img src="{{ url_for('static', filename='exp_icons/' + expense.category.name.lower() +'.png') }}" width="30" height="30"></td>
+                    <td class="exp-table-items" style="width: 150px;">{{ expense.name }}</td>
+                    <td class="exp-table-items" style="width: 150px;">{{ expense.category.name }}</td>
+                    <td class="exp-table-items" style="width: 100px;">{{ expense.expense_type.name }}</td>
+                    {% for entry in table %}
+                        {% if expense.expense_type.name.lower() == 'needs' and expense.date.strftime('%m.%Y') == entry["date"] %}
+                            <td class="exp-table-items" style="width: 150px; font-weight: bold;">{% if entry["amount_needs"] == entry["amount_needs"]|float|int %}{{ entry["amount_needs"]|int }}{% else %}{{ entry["amount_needs"] }}{% endif %} / {{ current_user.needs }}</td>
+                        {% endif %}
+                        {% if expense.expense_type.name.lower() == 'wants' and expense.date.strftime('%m.%Y') == entry["date"] %}
+                        <td class="exp-table-items" style="width: 150px; font-weight: bold;">{% if entry["amount_wants"] == entry["amount_wants"]|float|int %}{{ entry["amount_wants"]|int }}{% else %}{{ entry["amount_wants"] }}{% endif %} / {{ current_user.wants }}</td>
+                        {% endif %}
+                        {% if expense.expense_type.name.lower() == 'other' and expense.date.strftime('%m.%Y') == entry["date"] %}
+                        <td class="exp-table-items" style="width: 150px; font-weight: bold;">{% if entry["amount_other"] == entry["amount_other"]|float|int %}{{ entry["amount_other"]|int }}{% else %}{{ entry["amount_other"] }}{% endif %} / {{ current_user.other }}</td>
+                        {% endif %}
+                    {% endfor %}
+                    <td class="exp-table-items" style="width: 150px;">{{ expense.date.strftime('%d-%m-%Y') }}</td>
+                    <td class="exp-table-items" style="width: 150px;color: rgb(201, 25, 25); font-weight: bold;">-{% if expense.amount == expense.amount|float|int %}{{ expense.amount|int }}{% else %}{{ expense.amount }}{% endif %}$</td>
+                    <td class="exp-table-items" style="width: 320px; text-align: left;">{{ expense.note }}</td>
+                    <td class="exp-table-items" style="width: 100px;">
+                        <div class="button-container" style="justify-content: right;">
+                            <a href="{{ url_for('update_expense', expense_id=expense.id) }}">
+                                <button type="button" class="inc-btn" style="width: 36px;height: 25px;">Edit</button>
+                            </a>
+                            <form action="{{ url_for('delete_expense', expense_id=expense.id) }}" method="POST">
+                                <input type="submit" class="inc-btn" style="height: 25px;" value="Delete">
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div> 
+{% endblock content %}
+
+
+
+
+

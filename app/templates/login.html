@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200&display=swap" rel="stylesheet">
+    <title>Personal finance assistant</title>
+</head>
+<body>
+    <header class="app-header">
+        <div class="app-title">Personal finance assistant</div>
+    </header>
+    <nav class="app-navigation">
+        <div class="nav-elements-container">
+            <ul>
+                <li><ion-icon name="home-outline" size="large"></ion-icon></a></li>
+                <li><ion-icon name="person-remove-outline" size="large"></ion-icon></li>
+                <li><ion-icon name="person-add-outline" size="large"></ion-icon></li>
+                <li><ion-icon name="stats-chart-outline" size="large"></ion-icon></li>
+                <li><ion-icon name="person-circle-outline" size="large"></ion-icon></li>
+            </ul>
+        </div>
+    </nav>
+    <main role="main">
+        {% with messages = get_flashed_messages(category_filter=["register"]) %}
+        {% if messages %}
+            {% for message in messages %}
+                <div style="color: white; text-align: center; position: relative;top: 100px;">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+        <div class="content-section" id="login-mt">
+            <form method="POST" action="">
+                {{ form.hidden_tag() }}
+                
+                <fieldset class="form-group">
+                    <legend class="ln-title">Log In</legend>
+                    <div class="form-group">
+                        {{ form.email.label(class="form-control-label") }}
+                        {% if form.email.errors %}
+                            {{ form.email(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.email.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.email(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.password.label(class="form-control-label") }}
+                        {% if form.password.errors %}
+                            {{ form.password(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.password.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.password(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-check">
+                        {{ form.remember(class="form-check-input") }}
+                        {{ form.remember.label(class="form-check-label") }}
+                    </div>
+                </fieldset>
+                <div class="form-group">
+                    {{ form.submit(class="btn btn-outline-info") }}
+                </div>
+                <small class="li-frgt">
+                    <a href="#" class="li-link">Forgot Password?</a>
+                </small>
+            </form>
+        </div>
+        <div class="border-top">
+            <small class="li-text">
+                Need An Account? <a class="li-link" href="{{ url_for('register') }}">Sign Up Now</a>
+            </small>
+        </div>
+    </main>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+</html>

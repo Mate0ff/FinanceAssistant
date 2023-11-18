@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="pg-list">
+        <div class="bal-dt-container">
+            <div class="bal-date-container">
+                <div class="exp-content-section">
+                    <form method="POST" action="">
+                        {{ form.hidden_tag() }}
+                            <div class="form-group " id="exp-form-group">
+                                {% if form.date.errors %}
+                                    {{ form.date(class="form-control form-control-lg is-invalid") }}
+                                {% else %}
+                                    {{ form.date(class="form-control form-control-lg") }}
+                                {% endif %}
+                            </div>
+                            <script>
+                                document.getElementById('date-picker').addEventListener('change', function() {
+                                    this.form.submit();
+                                });
+                            </script>
+                    </form>
+                </div>
+            </div>
+            <div class="bal-title-container">
+                <h1 id="route-title">Balance</h1>
+            </div>
+            <div class="bal-empty-container">
+            </div>
+        </div>
+        <div class="bal-plbal-container">
+            <div id="bal-plot1">
+                <img src="{{ url_for('static', filename='plot.png') }}" width="300" height="300">
+            </div>
+            <div id="bal-balance">
+                <h2>Saldo:</h2>
+                <p style="font-weight: 700; font-size: larger;">{% if current_user.saldo == current_user.saldo|float|int %}{{ current_user.saldo|int }}{% else %}{{ current_user.saldo }}{% endif %} $</p>
+            </div>
+        </div>
+        <div class="bal-table-container">
+            <table class="bal-table" style="overflow-y: auto;">
+                <tr>
+                    <th class="bal-table-items" style="width: 60px;">Icon</th>
+                    <th class="bal-table-items" style="width: 170px;">Name</th>
+                    <th class="bal-table-items" style="width: 170px;">Category</th>
+                    <th class="bal-table-items" style="width: 170px;">Type</th>
+                    <th class="bal-table-items" style="width: 290px;">Limit</th>
+                    <th class="bal-table-items" style="width: 170px;">Date</th>  
+                    <th class="bal-table-items" style="width: 170px;">Amount</th>
+                    <th class="bal-table-items" style="width: 300px;">Note</th>
+                    <th class="bal-table-items" style="width: 1px;"></th>
+                </tr>
+                {% for transaction in transactions %}
+                    {% if is_expense(transaction) %}
+                        <tr>
+                            <td class="bal-table-items" style="width: 60px;"><img src="{{ url_for('static', filename='exp_icons/' + transaction.category.name.lower() +'.png') }}" width="30" height="30"></td>
+                            <td class="bal-table-items" style="width: 150px;" >{{ transaction.name }}</td>
+                            <td class="bal-table-items" style="width: 150px;">{{ transaction.category.name }}</td>
+                            <td class="bal-table-items" style="width: 100px;">{{ transaction.expense_type.name }}</td>
+                            {% for entry in table %}
+                                {% if transaction.expense_type.name.lower() == 'needs' and transaction.date.strftime('%m.%Y') == entry["date"] %}
+                                    <td class="exp-table-items" style="width: 150px;">{% if entry["amount_needs"] == entry["amount_needs"]|float|int %}{{ entry["amount_needs"]|int }}{% else %}{{ entry["amount_needs"] }}{% endif %} / {{ current_user.needs }}</td>
+                                {% endif %}
+                                {% if transaction.expense_type.name.lower() == 'wants' and transaction.date.strftime('%m.%Y') == entry["date"] %}
+                                <td class="exp-table-items" style="width: 150px;">{% if entry["amount_wants"] == entry["amount_wants"]|float|int %}{{ entry["amount_wants"]|int }}{% else %}{{ entry["amount_wants"] }}{% endif %} / {{ current_user.wants }}</td>
+                                {% endif %}
+                                {% if transaction.expense_type.name.lower() == 'other' and transaction.date.strftime('%m.%Y') == entry["date"] %}
+                                <td class="exp-table-items" style="width: 150px;">{% if entry["amount_other"] == entry["amount_other"]|float|int %}{{ entry["amount_other"]|int }}{% else %}{{ entry["amount_other"] }}{% endif %} / {{ current_user.other }}</td>
+                                {% endif %}
+                            {% endfor %}
+                            <td class="bal-table-items" style="width: 150px;">{{ transaction.date.strftime('%d-%m-%Y') }}</td>
+                            <td class="bal-table-items" style="width: 150px; color: rgb(201, 25, 25); font-weight: bold;">-{% if transaction.amount == transaction.amount|float|int %}{{ transaction.amount|int }}{% else %}{{ transaction.amount }}{% endif %}$</td>
+                            <td class="bal-table-items" style="width: 320px;text-align: left;">{{ transaction.note }}</td>
+                            <td class="bal-table-items" style="width: 1px;"></td>
+                        </tr>
+                    {% elif is_income(transaction) %}
+                        <tr>
+                            <td class="bal-table-items" style="width: 60px;"><img src="{{ url_for('static', filename='inc_icons/' + transaction.category.name.lower() +'.png') }}" width="30" height="30"></td>
+                            <td class="bal-table-items" style="width: 150px;">{{ transaction.name }}</td>
+                            <td class="bal-table-items" style="width: 150px;">{{ transaction.category.name }}</td>
+                            <td class="inc-table-items" style="width: 100px;">-</td>
+                            <td class="inc-table-items" style="width: 150px;">-</td>
+                            <td class="bal-table-items" style="width: 150px;">{{ transaction.date.strftime('%d-%m-%Y') }}</td>
+                            <td class="bal-table-items" style="width: 150px;color: rgb(63, 148, 91); font-weight: bold;">+{% if transaction.amount == transaction.amount|float|int %}{{ transaction.amount|int }}{% else %}{{ transaction.amount }}{% endif %}$</td>
+                            <td class="bal-table-items" style="width: 300px;text-align: left;">{{ transaction.note }}</td>
+                            <td class="bal-table-items" style="width: 1px;"></td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+{% endblock content %}

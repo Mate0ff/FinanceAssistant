@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="pg-list">
+        <div class="acc-title">
+            <h1>Account</h1>
+        </div>
+        <div class="acc-txav-container">
+            <div class="acc-text-container">
+                <p id="acc-txt1">You have saved already:</p>
+                <p id="acc-txt2">20.000 $</p>
+            </div>
+            <div class="acc-img-container">
+                <img src="{{ avatar }}" width="300" height="300">
+                {% if current_user.is_authenticated %}
+                    <p class="acc-img-text"  style="font-weight: 600;">{{ current_user.username }}</p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="acc-limit-txt">
+            <h2>Monthly Limits</h2>
+        </div>
+        <div class="acc-limit-container-full">
+            <div class="acc-limit-container">
+                <p class="acc-limit1">Needs</p>
+                <p class="acc-limit2">Wants</p>
+                <p class="acc-limit3">Other</p>
+            </div>
+            <div class="acc-skill-bar-container">
+                <div class="acc-skill-bar">
+                    <span class="acc-skill-per1">
+                        <span class="acc-pb">{{ current_user.needs }}</span>
+                    </span>
+                </div>
+                <div class="acc-skill-bar">
+                    <span class="acc-skill-per2">
+                        <span class="acc-pb">{{ current_user.wants }}</span>
+                    </span>
+                </div>
+                <div class="acc-skill-bar">
+                    <span class="acc-skill-per3">
+                        <span class="acc-pb">{{ current_user.other }}</span>
+                    </span>
+                </div>
+            </div>
+            <div class="acc-btn-container" id="acc-btn1">
+                <a href="{{ url_for('update_account') }}">
+                    <button type="button" class="acc-btn"  style="width: 100px;height: 25px;">Edit</button>
+                </a>
+            </div>            
+        </div>
+    </div>
+{% endblock content %}
