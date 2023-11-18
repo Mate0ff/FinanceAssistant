@@ -29,7 +29,29 @@
         </div>
         <div class="exp-plot-container">
             <div id="exp-plot1">
-                {{ plot_div|safe }}
+                <canvas id="myChart"></canvas>
+                <script>
+                    const ctg = document.getElementById('myChart');
+                  
+                    new Chart(ctg, {
+                      type: 'bar',
+                      data: {
+                        labels: {{ lables | safe }},
+                        datasets: [{
+                          label: '# of Votes',
+                          data: {{ values | safe }},
+                          borderWidth: 1
+                        }]
+                      },
+                      options: {
+                        scales: {
+                          y: {
+                            beginAtZero: true
+                          }
+                        }
+                      }
+                    });
+                  </script>
             </div>
             <div id="exp-plot2">
                 <canvas id="lineChart" width="750" height="400"> </canvas>

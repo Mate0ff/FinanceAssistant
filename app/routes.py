@@ -4,7 +4,7 @@ from app.models import User, Expense, ExpenseType, ExpenseCategory, IncomeCatego
 from app import app, db, bcrypt
 from flask_login import login_user, current_user, logout_user, login_required
 import plotly.express as px
-
+from datetime import date
 
 
 @app.context_processor
@@ -72,7 +72,7 @@ def home():
 
     form = DatePickerForm()
 
-    # Jeśli formularz został przesłany
+   
     if form.validate_on_submit():
         selected_date = form.date.data
 
@@ -88,6 +88,7 @@ def home():
 @login_required
 def expenses():
     expenses = Expense.query.filter_by(user=current_user).all()
+    expenses_all = Expense.query.filter_by(user=current_user).all()
     expenses.sort(key=lambda x: x.date, reverse=True)
 
     exp_needs = Expense.query.filter_by(user=current_user, type_id=1).all()
@@ -101,10 +102,11 @@ def expenses():
     table = []
     set_variable = set()
 
-
+    # dictionary of expenses dates in format mm.YYYY
     for expense in expenses:
         set_variable.add(str(expense.date.strftime('%m.%Y')))
 
+    # checking if mm.YYYY from dictionary equals mm.YYYY of expense
     for x in set_variable:
         sum_variable_needs = 0
         sum_variable_wants = 0
@@ -125,29 +127,35 @@ def expenses():
         dict_variable["amount_other"] = sum_variable_other
         table.append(dict_variable)
 
-
-
-    data=[
-        ("01-05-2023", 1500),
-        ("04-05-2023", 230),
-        ("06-06-2023", 150),
-        ("07-06-2023", 300),
-    ]
-
-    lables = [row[0] for row in data]
-    values = [row[1] for row in data]
-    
-    fig = px.line(x=[1, 2, 3, 4], y=[10, 11, 12, 13])
-    plot_div = fig.to_html(full_html=False)
+    # słownik ktory wyglada tak ("data", expense)
 
     form = DatePickerForm()
 
+    selected_date = date.today()
+
     if form.validate_on_submit():
         selected_date = form.date.data
+        print(type(selected_date))
         expenses = Expense.query.filter_by(user=current_user, date=selected_date).all()
 
+    plot_list = []
+
+    date_var = selected_date
+    for expense in expenses_all:
+        if expense.date.strftime("%m-%Y") == date_var:  
+            plot_list.append(expense)
+
+    plot1_data=[]
+
+    for expense in plot_list:
+        element = (expense.date,expense.amount)
+        plot1_data.append(element)
+
+    lables = [row[0] for row in plot1_data]
+    values = [row[1] for row in plot1_data]
+
     return render_template('expenses.html', expenses=expenses, total_needs=total_needs, total_wants=total_wants,
-                           total_other=total_other, table=table, values=values,lables=lables,plot_div=plot_div ,form=form)
+                           total_other=total_other, table=table, values=values,lables=lables,form=form)
 
 @app.route("/income", methods=['GET', 'POST'])
 @login_required
