@@ -3,7 +3,6 @@ from app.forms import RegistrationForm, LoginForm, CreateExpenseForm, CreateInco
 from app.models import User, Expense, ExpenseType, ExpenseCategory, IncomeCategory, Income
 from app import app, db, bcrypt
 from flask_login import login_user, current_user, logout_user, login_required
-import plotly.express as px
 from datetime import date
 
 
@@ -88,8 +87,9 @@ def home():
 @login_required
 def expenses():
     expenses = Expense.query.filter_by(user=current_user).all()
-    expenses_all = expenses
     expenses.sort(key=lambda x: x.date, reverse=True)
+    expenses_all = expenses
+    expenses_all.sort(key=lambda x: x.date, reverse=False)
     
 
     exp_needs = Expense.query.filter_by(user=current_user, type_id=1).all()
@@ -133,7 +133,7 @@ def expenses():
     form = DatePickerForm()
 
     # bar plot and date picker
-
+    ###########################################################################################
     month_year = date.today().strftime('%m.%Y')
 
     if form.validate_on_submit():
@@ -141,26 +141,28 @@ def expenses():
         month_year = selected_date.strftime('%m.%Y')
         expenses = Expense.query.filter_by(user=current_user, date=selected_date).all()
 
-    plot_list = []
+    plot2_list = []
 
     for expense in expenses_all:
         if expense.date.strftime("%m.%Y") == month_year:  
-            plot_list.append(expense)
+            plot2_list.append(expense)
 
-    plot1_data=[]
+    plot2_data=[]
 
-    for expense in plot_list:
+    for expense in plot2_list:
         element = (str(expense.date),expense.amount)
         print(element)
-        plot1_data.append(element)
+        plot2_data.append(element)
 
-    lables = [row[0] for row in plot1_data]
-    values = [row[1] for row in plot1_data]
-
+    lables_bar = [row[0] for row in plot2_data]
+    values_bar = [row[1] for row in plot2_data]
+    ###########################################################################################
+    lables_pie = ["wants","needs","other"]
+    values_pie = 2
 
 
     return render_template('expenses.html', expenses=expenses, total_needs=total_needs, total_wants=total_wants,
-                           total_other=total_other, table=table, values=values,lables=lables,form=form)
+                           total_other=total_other, table=table, values_bar=values_bar,lables_bar=lables_bar,form=form)
 
 @app.route("/income", methods=['GET', 'POST'])
 @login_required

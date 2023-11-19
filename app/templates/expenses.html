@@ -36,10 +36,10 @@
                     new Chart(ctg, {
                       type: 'bar',
                       data: {
-                        labels: {{ lables | safe }},
+                        labels: {{ lables_bar | safe }},
                         datasets: [{
-                          label: '# of Votes',
-                          data: {{ values | safe }},
+                          label: 'Expenses',
+                          data: {{ values_bar | safe }},
                           borderWidth: 1
                         }]
                       },
@@ -60,11 +60,11 @@
                     var lineChart = new Chart(ctx, { 
                         type: "line", 
                         data: { 
-                            lables: {{ lables | safe }},
+                            lables: {{ lables_bar | safe }},
                             datasets: [
                                 {
                                     label: "Data points",
-                                    data: {{ values | safe }},
+                                    data: {{ values_bar | safe }},
                                     fill: false,
                                     borderColor: 'rgb(75, 192, 192)',
                                     tension: 0.1
