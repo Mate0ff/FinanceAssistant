@@ -124,6 +124,7 @@ h1,h2,h3, p{
     display: flex;
     text-align: center;
     flex-direction: row;
+    gap: 25px;
 }
 
 

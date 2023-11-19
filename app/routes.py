@@ -88,8 +88,9 @@ def home():
 @login_required
 def expenses():
     expenses = Expense.query.filter_by(user=current_user).all()
-    expenses_all = Expense.query.filter_by(user=current_user).all()
+    expenses_all = expenses
     expenses.sort(key=lambda x: x.date, reverse=True)
+    
 
     exp_needs = Expense.query.filter_by(user=current_user, type_id=1).all()
     exp_wants = Expense.query.filter_by(user=current_user, type_id=2).all()
@@ -127,32 +128,36 @@ def expenses():
         dict_variable["amount_other"] = sum_variable_other
         table.append(dict_variable)
 
-    # słownik ktory wyglada tak ("data", expense)
+    # tabela ktory wyglada tak ("data", expense)
 
     form = DatePickerForm()
 
-    selected_date = date.today()
+    # bar plot and date picker
+
+    month_year = date.today().strftime('%m.%Y')
 
     if form.validate_on_submit():
         selected_date = form.date.data
-        print(type(selected_date))
+        month_year = selected_date.strftime('%m.%Y')
         expenses = Expense.query.filter_by(user=current_user, date=selected_date).all()
 
     plot_list = []
 
-    date_var = selected_date
     for expense in expenses_all:
-        if expense.date.strftime("%m-%Y") == date_var:  
+        if expense.date.strftime("%m.%Y") == month_year:  
             plot_list.append(expense)
 
     plot1_data=[]
 
     for expense in plot_list:
-        element = (expense.date,expense.amount)
+        element = (str(expense.date),expense.amount)
+        print(element)
         plot1_data.append(element)
 
     lables = [row[0] for row in plot1_data]
     values = [row[1] for row in plot1_data]
+
+
 
     return render_template('expenses.html', expenses=expenses, total_needs=total_needs, total_wants=total_wants,
                            total_other=total_other, table=table, values=values,lables=lables,form=form)
