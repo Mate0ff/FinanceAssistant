@@ -95,10 +95,6 @@ def expenses():
     exp_wants = Expense.query.filter_by(user=current_user, type_id=2).all()
     exp_other = Expense.query.filter_by(user=current_user, type_id=3).all()
 
-    total_needs = sum(expense.amount for expense in exp_needs)
-    total_wants = sum(expense.amount for expense in exp_wants)
-    total_other = sum(expense.amount for expense in exp_other)
-
     table = []
     set_variable = set()
 
@@ -170,8 +166,8 @@ def expenses():
     lables_bar = [row[0] for row in plot2_data]
     values_bar = [row[1] for row in plot2_data]
     
-    return render_template('expenses.html', expenses=expenses, total_needs=total_needs, total_wants=total_wants,
-                           total_other=total_other, table=table, values_bar=values_bar,lables_bar=lables_bar, values_pie = values_pie, lables_pie = lables_pie ,form=form)
+    return render_template('expenses.html', expenses=expenses,
+                            table=table, values_bar=values_bar,lables_bar=lables_bar, values_pie = values_pie, lables_pie = lables_pie ,form=form)
 
 @app.route("/income", methods=['GET', 'POST'])
 @login_required
@@ -181,12 +177,57 @@ def income():
 
     form = DatePickerForm()
 
+    month_year = date.today().strftime('%m.%Y')
+
     # Jeśli formularz został przesłany
     if form.validate_on_submit():
         selected_date = form.date.data
+        month_year = selected_date.strftime('%m.%Y')
         incomes = Income.query.filter_by(user=current_user, date = selected_date).all()
+    
+    plot2_list = []
 
-    return render_template('income.html', incomes=incomes, form=form)
+    for income in incomes:
+        if income.date.strftime("%m.%Y") == month_year:  
+            plot2_list.append(income)
+
+    plot2_data=[]
+    variable_salary = 0
+    variable_bonus = 0
+    variable_gift = 0
+    variable_rent = 0
+    variable_scholarship = 0
+    variable_investment = 0
+    variable_other = 0
+
+
+    for income in plot2_list:
+        element = (str(income.date),income.amount)
+        print(element)
+        plot2_data.append(element)
+        if income.category.name.lower() == 'salary':
+            variable_salary += income.amount
+        if income.category.name.lower() == 'bonus':
+            variable_bonus += income.amount
+        if income.category.name.lower() == 'gift':
+            variable_gift += income.amount
+        if income.category.name.lower() == 'rent':
+            variable_rent += income.amount
+        if income.category.name.lower() == 'scholarship':
+            variable_scholarship += income.amount
+        if income.category.name.lower() == 'investment':
+            variable_investment += income.amount
+        if income.category.name.lower() == 'other':
+            variable_other += income.amount
+        
+    lables_pie = ['Salary','Bonus','Gift','Rent','Scholarship','Investment','Other']
+    values_pie =[variable_salary,variable_bonus,variable_gift,variable_rent,variable_scholarship,variable_investment,variable_other]
+
+
+    lables_bar = [row[0] for row in plot2_data]
+    values_bar = [row[1] for row in plot2_data]
+
+    return render_template('income.html', incomes=incomes, lables_bar=lables_bar,values_bar=values_bar,lables_pie=lables_pie,values_pie=values_pie,form=form)
 
 @app.route("/summary")
 @login_required

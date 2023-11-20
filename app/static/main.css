@@ -128,12 +128,12 @@ h1,h2,h3, p{
 }
 
 
-#exp-plot1, #inc-plot1, #inc-plot2{
+#exp-plot1, #inc-plot1{
     width: 750px;
     height: 450px;
 }
 
-#exp-plot2{
+#exp-plot2,#inc-plot2{
     width: 750px;
     height: 380px;
     display: flex;

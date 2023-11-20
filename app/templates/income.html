@@ -29,10 +29,55 @@
         </div>
         <div class="inc-plot-container">
             <div id="inc-plot1">
-                <img src="{{ url_for('static', filename='plot.png') }}" width="300" height="300">
+                <canvas id="barChart"></canvas>
+                <script>
+                    const ctg = document.getElementById('barChart');
+                  
+                    new Chart(ctg, {
+                      type: 'bar',
+                      data: {
+                        labels: {{ lables_bar | safe }},
+                        datasets: [{
+                          label: 'Incomes',
+                          data: {{ values_bar | safe }},
+                          borderWidth: 1
+                        }]
+                      },
+                      options: {
+                        scales: {
+                          y: {
+                            beginAtZero: true
+                          }
+                        }
+                      }
+                    });
+                  </script>
             </div>
             <div id="inc-plot2">
-                <img src="{{ url_for('static', filename='plot.png') }}" width="300" height="300">
+                <canvas id="pieChart" width="750" height="400"> </canvas>
+                <script>
+                    const ctx = document.getElementById('pieChart');
+                    
+                    new Chart(ctx, {
+                      type: 'pie',
+                      data: {
+                        labels: {{ lables_pie | safe }},
+                        datasets: [{
+                            data: {{ values_pie | safe }},
+                            backgroundColor: [
+                                '#EA738D',
+                                '#8AAAE5',
+                                'rgb(255, 205, 86)',
+                                '#EEA47F',
+                                '#CBD18F',
+                                '#317773',
+                                '#E2D1F9'
+                            ],
+                            hoverOffset: 3
+                        }]  
+                      },
+                    });
+                </script>
             </div>
         </div>
         <div class="inc-btn-container">
