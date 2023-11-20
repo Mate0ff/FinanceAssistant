@@ -88,9 +88,8 @@ def home():
 def expenses():
     expenses = Expense.query.filter_by(user=current_user).all()
     expenses.sort(key=lambda x: x.date, reverse=True)
-    expenses_all = expenses
-    expenses_all.sort(key=lambda x: x.date, reverse=False)
-    
+    expenses_all = expenses # Musze zmienic cos z ta data zeby na wykresie sie dobrze prezentowala 
+
 
     exp_needs = Expense.query.filter_by(user=current_user, type_id=1).all()
     exp_wants = Expense.query.filter_by(user=current_user, type_id=2).all()
@@ -148,21 +147,31 @@ def expenses():
             plot2_list.append(expense)
 
     plot2_data=[]
+    variable_needs = 0
+    variable_wants = 0
+    variable_other = 0
 
     for expense in plot2_list:
         element = (str(expense.date),expense.amount)
         print(element)
         plot2_data.append(element)
+        if expense.expense_type.name.lower() == 'needs':
+            variable_needs += expense.amount
+        if expense.expense_type.name.lower() == 'wants':
+            variable_wants += expense.amount
+        if expense.expense_type.name.lower() == 'other':
+            variable_other += expense.amount
+        
+    lables_pie = ["wants","needs","other"]
+    values_pie =[variable_wants,variable_needs,variable_other]
+
+
 
     lables_bar = [row[0] for row in plot2_data]
     values_bar = [row[1] for row in plot2_data]
-    ###########################################################################################
-    lables_pie = ["wants","needs","other"]
-    values_pie = 2
-
-
+    
     return render_template('expenses.html', expenses=expenses, total_needs=total_needs, total_wants=total_wants,
-                           total_other=total_other, table=table, values_bar=values_bar,lables_bar=lables_bar,form=form)
+                           total_other=total_other, table=table, values_bar=values_bar,lables_bar=lables_bar, values_pie = values_pie, lables_pie = lables_pie ,form=form)
 
 @app.route("/income", methods=['GET', 'POST'])
 @login_required
