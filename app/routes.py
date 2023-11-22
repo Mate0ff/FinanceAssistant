@@ -3,7 +3,7 @@ from app.forms import RegistrationForm, LoginForm, CreateExpenseForm, CreateInco
 from app.models import User, Expense, ExpenseType, ExpenseCategory, IncomeCategory, Income
 from app import app, db, bcrypt
 from flask_login import login_user, current_user, logout_user, login_required
-from datetime import date
+from datetime import date, datetime
 
 
 @app.context_processor
@@ -34,6 +34,12 @@ def home():
     balance = total_incomes - total_expenses
 
     transactions = expenses + incomes
+
+    abc = []
+
+    for trans in transactions:
+        abc.append(trans)
+
     transactions.sort(key=lambda x: x.date, reverse=True)
 
     current_user.saldo = round(balance, 2)
@@ -76,14 +82,26 @@ def home():
         incomes = Income.query.filter_by(user=current_user, date = selected_date).all()
         transactions = expenses + incomes
         transactions.sort(key=lambda x: x.date, reverse=True)
+    
+    incomes.sort(key=lambda x: x.date, reverse=False)
+    expenses.sort(key=lambda x: x.date, reverse=False)
+
+
+    lables_all = []
 
     plot1_list = []
+    plot1_data=[]
+
+    plot2_data=[]
+    plot2_list = []
+
+    for transaction in abc:
+        if transaction.date.strftime("%m.%Y") == month_year: 
+            lables_all.append(str(transaction.date))
 
     for expense in expenses:
         if expense.date.strftime("%m.%Y") == month_year:  
             plot1_list.append(expense)
-
-    plot1_data=[]
 
     for expense in plot1_list:
         element = (str(expense.date),expense.amount)
@@ -91,26 +109,20 @@ def home():
         plot1_data.append(element)
 
 
-    lables_exp = [row[0] for row in plot1_data]
-    values_exp = [row[1] for row in plot1_data]
-
-    plot2_list = []
-
     for income in incomes:
         if income.date.strftime("%m.%Y") == month_year:  
             plot2_list.append(income)
-
-    plot2_data=[]
 
     for income in plot2_list:
         element = (str(income.date),income.amount)
         print(element)
         plot2_data.append(element)
 
-    lables_inc = [row[0] for row in plot2_data]
-    values_inc = [row[1] for row in plot2_data]
 
-    lables_all = lables_exp + lables_inc
+    values_inc = [row[1] for row in plot2_data]
+    values_exp = [row[1] for row in plot1_data]
+
+  
 
         
     return render_template('home.html', transactions=transactions,lables_all=lables_all,

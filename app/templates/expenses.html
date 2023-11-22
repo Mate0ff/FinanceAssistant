@@ -38,13 +38,16 @@
                       data: {
                         labels: {{ lables_bar | safe }},
                         datasets: [{
-                          label: 'Bar',
-                          data: {{ values_bar | safe }},
-                          borderWidth: 1
-                        },{
                             type: 'line',
                             label: 'Linear',
-                            data: {{ values_bar | safe }}
+                            data: {{ values_bar | safe }},
+                            borderColor: 'rgb(255, 99, 132)'
+                        },{
+                          label: 'Bar',
+                          data: {{ values_bar | safe }},
+                          borderWidth: 1,
+                          borderColor: 'rgb(54, 162, 235)',
+                          backgroundColor: 'rgba(54, 162, 235, 0.6)'
                         }]
                       },
                       options: {
