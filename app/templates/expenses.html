@@ -38,10 +38,13 @@
                       data: {
                         labels: {{ lables_bar | safe }},
                         datasets: [{
-                          label: 'Expenses',
+                          label: 'Bar',
                           data: {{ values_bar | safe }},
-                          backgroundColor: ['#8AAAE5'],
                           borderWidth: 1
+                        },{
+                            type: 'line',
+                            label: 'Linear',
+                            data: {{ values_bar | safe }}
                         }]
                       },
                       options: {

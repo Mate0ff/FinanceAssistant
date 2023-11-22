@@ -29,7 +29,33 @@
         </div>
         <div class="bal-plbal-container">
             <div id="bal-plot1">
-                <img src="{{ url_for('static', filename='plot.png') }}" width="300" height="300">
+                <canvas id="barChart"></canvas>
+                <script>
+                    const ctg = document.getElementById('barChart');
+                  
+                    new Chart(ctg, {
+                      type: 'bar',
+                      data: {
+                        labels: {{ lables_all | safe }},
+                        datasets: [{
+                          label: 'Bar',
+                          data: {{ values_exp | safe }},
+                          borderWidth: 1
+                        },{
+                          label: 'Bar',
+                          data: {{ values_inc | safe }},
+                          borderWidth: 1
+                        }]
+                      },
+                      options: {
+                        scales: {
+                          y: {
+                            beginAtZero: true
+                          }
+                        }
+                      }
+                    });
+                  </script>
             </div>
             <div id="bal-balance">
                 <h2>Saldo:</h2>

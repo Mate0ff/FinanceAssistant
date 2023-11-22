@@ -31,10 +31,6 @@ def home():
     exp_wants = Expense.query.filter_by(user=current_user, type_id=2).all()
     exp_other = Expense.query.filter_by(user=current_user, type_id=3).all()
 
-    total_needs = sum(expense.amount for expense in exp_needs)
-    total_wants = sum(expense.amount for expense in exp_wants)
-    total_other = sum(expense.amount for expense in exp_other)
-
     balance = total_incomes - total_expenses
 
     transactions = expenses + incomes
@@ -71,17 +67,54 @@ def home():
 
     form = DatePickerForm()
 
+    month_year = date.today().strftime('%m.%Y')
    
     if form.validate_on_submit():
         selected_date = form.date.data
-
+        month_year = selected_date.strftime('%m.%Y')
         expenses = Expense.query.filter_by(user=current_user, date = selected_date).all()
         incomes = Income.query.filter_by(user=current_user, date = selected_date).all()
         transactions = expenses + incomes
         transactions.sort(key=lambda x: x.date, reverse=True)
 
+    plot1_list = []
+
+    for expense in expenses:
+        if expense.date.strftime("%m.%Y") == month_year:  
+            plot1_list.append(expense)
+
+    plot1_data=[]
+
+    for expense in plot1_list:
+        element = (str(expense.date),expense.amount)
+        print(element)
+        plot1_data.append(element)
+
+
+    lables_exp = [row[0] for row in plot1_data]
+    values_exp = [row[1] for row in plot1_data]
+
+    plot2_list = []
+
+    for income in incomes:
+        if income.date.strftime("%m.%Y") == month_year:  
+            plot2_list.append(income)
+
+    plot2_data=[]
+
+    for income in plot2_list:
+        element = (str(income.date),income.amount)
+        print(element)
+        plot2_data.append(element)
+
+    lables_inc = [row[0] for row in plot2_data]
+    values_inc = [row[1] for row in plot2_data]
+
+    lables_all = lables_exp + lables_inc
+
         
-    return render_template('home.html', transactions=transactions, total_needs=total_needs, total_wants=total_wants,total_other=total_other, table=table,form=form)
+    return render_template('home.html', transactions=transactions,lables_all=lables_all,
+                            values_exp=values_exp,values_inc=values_inc,table=table,form=form)
 
 @app.route("/expenses", methods=['GET', 'POST'])
 @login_required

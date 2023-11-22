@@ -38,9 +38,13 @@
                       data: {
                         labels: {{ lables_bar | safe }},
                         datasets: [{
-                          label: 'Incomes',
+                          label: 'Bar',
                           data: {{ values_bar | safe }},
                           borderWidth: 1
+                        },{
+                            type: 'line',
+                            label: 'Linear',
+                            data: {{ values_bar | safe }}
                         }]
                       },
                       options: {
