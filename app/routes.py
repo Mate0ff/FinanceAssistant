@@ -41,6 +41,7 @@ def home():
         abc.append(trans)
 
     transactions.sort(key=lambda x: x.date, reverse=True)
+    abc.sort(key=lambda x: x.date, reverse=False)
 
     current_user.saldo = round(balance, 2)
     db.session.commit()
@@ -83,49 +84,84 @@ def home():
         transactions = expenses + incomes
         transactions.sort(key=lambda x: x.date, reverse=True)
     
-    incomes.sort(key=lambda x: x.date, reverse=False)
-    expenses.sort(key=lambda x: x.date, reverse=False)
-
-
     lables_all = []
 
-    plot1_list = []
+    month_trans = []
+
+    month_expenses = []
     plot1_data=[]
+    exp_dt = []
 
+    month_incomes = []
     plot2_data=[]
-    plot2_list = []
+    inc_dt = []
 
+    expenses.sort(key=lambda x: x.date, reverse=False)
+    incomes.sort(key=lambda x: x.date, reverse=False)
+
+    # LISTA Z DATA WSZYSTKICH TRANSAKCJI W OBECNYM MIESIACU
     for transaction in abc:
         if transaction.date.strftime("%m.%Y") == month_year: 
             lables_all.append(str(transaction.date))
+            month_trans.append(transaction)
 
+    lables_all = list(set(lables_all))
+    
+    dates_datetime = [datetime.strptime(data, "%Y-%m-%d") for data in lables_all]
+    sorted_dates = sorted(dates_datetime)
+    sorted_lables = [data.strftime("%Y-%m-%d") for data in sorted_dates]
+    print("Posortowane lables")
+    print(sorted_lables)
+
+    # ZBIERAM SZYSTKIE EXPENSES Z OBECNEGO MIESIACA
     for expense in expenses:
         if expense.date.strftime("%m.%Y") == month_year:  
-            plot1_list.append(expense)
+            month_expenses.append(expense)
 
-    for expense in plot1_list:
-        element = (str(expense.date),expense.amount)
-        print(element)
-        plot1_data.append(element)
+    for expense in month_expenses:
+        exp_dt.append(str(expense.date))
+    exp_dt = set(exp_dt)
 
-
+    # ZBIERAM SZYSTKIE INCOMES Z OBECNEGO MIESIACA
     for income in incomes:
         if income.date.strftime("%m.%Y") == month_year:  
-            plot2_list.append(income)
+            month_incomes.append(income)
 
-    for income in plot2_list:
-        element = (str(income.date),income.amount)
-        print(element)
-        plot2_data.append(element)
+    for income in month_incomes:
+        inc_dt.append(str(income.date))
+    inc_dt = set(inc_dt)
 
+    exc_incomes = list(set(lables_all).symmetric_difference(inc_dt))
+    exc_expenses = list(set(lables_all).symmetric_difference(exp_dt))
+
+    for i in exc_expenses:
+        plot1_data.append((str(i),0))
+
+    for i in exc_incomes :
+        plot2_data.append((str(i),0))
+
+    for trans in month_trans:
+        if  isinstance(trans, Expense):
+             plot1_data.append((str(trans.date),trans.amount))
+        elif isinstance(trans, Income):		
+            plot2_data.append((str(trans.date),trans.amount))
+    
+
+
+    plot1_data = list(set(plot1_data))
+    plot2_data = list(set(plot2_data))
+
+    plot1_data = sorted(plot1_data, key=lambda x: x[0])
+    plot2_data = sorted(plot2_data, key=lambda x: x[0])
+
+    print(plot1_data)
+    print(plot2_data)
 
     values_inc = [row[1] for row in plot2_data]
     values_exp = [row[1] for row in plot1_data]
 
-  
-
         
-    return render_template('home.html', transactions=transactions,lables_all=lables_all,
+    return render_template('home.html', transactions=transactions,sorted_lables=sorted_lables,
                             values_exp=values_exp,values_inc=values_inc,table=table,form=form)
 
 @app.route("/expenses", methods=['GET', 'POST'])
@@ -133,19 +169,21 @@ def home():
 def expenses():
     expenses = Expense.query.filter_by(user=current_user).all()
     expenses.sort(key=lambda x: x.date, reverse=True)
-    expenses_all = expenses # Musze zmienic cos z ta data zeby na wykresie sie dobrze prezentowala 
-
 
     exp_needs = Expense.query.filter_by(user=current_user, type_id=1).all()
     exp_wants = Expense.query.filter_by(user=current_user, type_id=2).all()
     exp_other = Expense.query.filter_by(user=current_user, type_id=3).all()
 
+    expenses_all = []
     table = []
     set_variable = set()
 
     # dictionary of expenses dates in format mm.YYYY
     for expense in expenses:
         set_variable.add(str(expense.date.strftime('%m.%Y')))
+        expenses_all.append(expense)
+   
+    expenses_all.sort(key=lambda x: x.date, reverse=False)
 
     # checking if mm.YYYY from dictionary equals mm.YYYY of expense
     for x in set_variable:
@@ -220,6 +258,12 @@ def income():
     incomes = Income.query.filter_by(user=current_user).all()
     incomes.sort(key=lambda x: x.date, reverse=True)
 
+    income_all = []
+
+    for income in incomes:
+        income_all.append(income)
+    income_all.sort(key=lambda x: x.date, reverse=False)
+
     form = DatePickerForm()
 
     month_year = date.today().strftime('%m.%Y')
@@ -232,7 +276,7 @@ def income():
     
     plot2_list = []
 
-    for income in incomes:
+    for income in income_all:
         if income.date.strftime("%m.%Y") == month_year:  
             plot2_list.append(income)
 
