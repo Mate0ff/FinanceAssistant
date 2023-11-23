@@ -83,6 +83,7 @@ def home():
         incomes = Income.query.filter_by(user=current_user, date = selected_date).all()
         transactions = expenses + incomes
         transactions.sort(key=lambda x: x.date, reverse=True)
+
     
     lables_all = []
 
@@ -96,21 +97,20 @@ def home():
     plot2_data=[]
     inc_dt = []
 
-    expenses.sort(key=lambda x: x.date, reverse=False)
-    incomes.sort(key=lambda x: x.date, reverse=False)
 
     # LISTA Z DATA WSZYSTKICH TRANSAKCJI W OBECNYM MIESIACU
     for transaction in abc:
         if transaction.date.strftime("%m.%Y") == month_year: 
             lables_all.append(str(transaction.date))
             month_trans.append(transaction)
-
+    print("Transakcje w miesiacu")
+    print(month_trans)
     lables_all = list(set(lables_all))
     
     dates_datetime = [datetime.strptime(data, "%Y-%m-%d") for data in lables_all]
     sorted_dates = sorted(dates_datetime)
     sorted_lables = [data.strftime("%Y-%m-%d") for data in sorted_dates]
-    print("Posortowane lables")
+    print("\nPosortowane lables")
     print(sorted_lables)
 
     # ZBIERAM SZYSTKIE EXPENSES Z OBECNEGO MIESIACA
@@ -134,17 +134,18 @@ def home():
     exc_incomes = list(set(lables_all).symmetric_difference(inc_dt))
     exc_expenses = list(set(lables_all).symmetric_difference(exp_dt))
 
-    for i in exc_expenses:
-        plot1_data.append((str(i),0))
-
-    for i in exc_incomes :
-        plot2_data.append((str(i),0))
 
     for trans in month_trans:
         if  isinstance(trans, Expense):
              plot1_data.append((str(trans.date),trans.amount))
         elif isinstance(trans, Income):		
             plot2_data.append((str(trans.date),trans.amount))
+
+    for i in exc_expenses:
+        plot1_data.append((str(i),0))
+
+    for i in exc_incomes :
+        plot2_data.append((str(i),0))
     
 
 
@@ -154,7 +155,9 @@ def home():
     plot1_data = sorted(plot1_data, key=lambda x: x[0])
     plot2_data = sorted(plot2_data, key=lambda x: x[0])
 
+    print("\nDane wydatkow")
     print(plot1_data)
+    print("\nDane przychodow")
     print(plot2_data)
 
     values_inc = [row[1] for row in plot2_data]
