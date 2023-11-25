@@ -24,6 +24,17 @@ def home():
     expenses = Expense.query.filter_by(user=current_user).all()
     incomes = Income.query.filter_by(user=current_user).all()
 
+    incomes_all = []
+    expenses_all =[]
+    for i in expenses:
+        expenses_all.append(i)
+
+    for i in incomes:
+        incomes_all.append(i)
+
+    print(incomes_all)
+    print(expenses_all)
+
     total_expenses = sum(expense.amount for expense in expenses)
     total_incomes = sum(income.amount for income in incomes)
 
@@ -83,7 +94,6 @@ def home():
         incomes = Income.query.filter_by(user=current_user, date = selected_date).all()
         transactions = expenses + incomes
         transactions.sort(key=lambda x: x.date, reverse=True)
-
     
     lables_all = []
 
@@ -114,7 +124,7 @@ def home():
     print(sorted_lables)
 
     # ZBIERAM SZYSTKIE EXPENSES Z OBECNEGO MIESIACA
-    for expense in expenses:
+    for expense in expenses_all:
         if expense.date.strftime("%m.%Y") == month_year:  
             month_expenses.append(expense)
 
@@ -123,7 +133,7 @@ def home():
     exp_dt = set(exp_dt)
 
     # ZBIERAM SZYSTKIE INCOMES Z OBECNEGO MIESIACA
-    for income in incomes:
+    for income in incomes_all:
         if income.date.strftime("%m.%Y") == month_year:  
             month_incomes.append(income)
 
@@ -131,9 +141,27 @@ def home():
         inc_dt.append(str(income.date))
     inc_dt = set(inc_dt)
 
+    print(month_expenses)
+    print(month_incomes)
+
+
+    print("\nDaty wydatkow")
+    print(exp_dt)
+    print("\nDaty przychodow")
+    print(inc_dt)
+
+    # Dostaje dni bez wydatkow/przychodow w miesiacu
+
     exc_incomes = list(set(lables_all).symmetric_difference(inc_dt))
     exc_expenses = list(set(lables_all).symmetric_difference(exp_dt))
 
+    print("\nDaty bez wydatkow")
+    print(exc_expenses)
+
+    print("\nDaty bez przychodow")
+    print(exc_incomes)
+
+    # sprawdzam czy transakcja jest przychoden czy wydatkiem zeby wypisac ja na dobrym wykresie
 
     for trans in month_trans:
         if  isinstance(trans, Expense):
@@ -141,16 +169,14 @@ def home():
         elif isinstance(trans, Income):		
             plot2_data.append((str(trans.date),trans.amount))
 
+    
+
     for i in exc_expenses:
         plot1_data.append((str(i),0))
 
     for i in exc_incomes :
         plot2_data.append((str(i),0))
     
-
-
-    plot1_data = list(set(plot1_data))
-    plot2_data = list(set(plot2_data))
 
     plot1_data = sorted(plot1_data, key=lambda x: x[0])
     plot2_data = sorted(plot2_data, key=lambda x: x[0])
@@ -160,8 +186,34 @@ def home():
     print("\nDane przychodow")
     print(plot2_data)
 
-    values_inc = [row[1] for row in plot2_data]
-    values_exp = [row[1] for row in plot1_data]
+
+    # Sprawdzam czy jednego dnia sa wiecej niz 1 wydatek/przychodw
+    new1_data = []
+    new2_data = []
+
+    for date1, value1 in plot1_data:
+        found = False
+        for i in range(len(new1_data)):
+            if new1_data[i][0] == date1:
+                new1_data[i] = (date1, new1_data[i][1] + value1)
+                found = True
+                break
+        if not found:
+            new1_data.append((date1, value1))
+
+    for date2, value2 in plot2_data:
+        found = False
+        for i in range(len(new2_data)):
+            if new2_data[i][0] == date2:
+                new2_data[i] = (date2, new2_data[i][1] + value2)
+                found = True
+                break
+        if not found:
+            new2_data.append((date2, value2))
+
+
+    values_exp = [row[1] for row in new1_data]
+    values_inc = [row[1] for row in new2_data]
 
         
     return render_template('home.html', transactions=transactions,sorted_lables=sorted_lables,
@@ -247,13 +299,29 @@ def expenses():
     lables_pie = ["wants","needs","other"]
     values_pie =[variable_wants,variable_needs,variable_other]
 
+    new_data = []
+
+    for date1, value1 in plot2_data:
+        found = False
+        for i in range(len(new_data)):
+            if new_data[i][0] == date1:
+                new_data[i] = (date1, new_data[i][1] + value1)
+                found = True
+                break
+        if not found:
+            new_data.append((date1, value1))
+
+    lables_bar = list(set([row[0] for row in plot2_data]))
+
+    dates_datetime = [datetime.strptime(data, "%Y-%m-%d") for data in lables_bar]
+    sorted_dates = sorted(dates_datetime)
+    sorted_lables = [data.strftime("%Y-%m-%d") for data in sorted_dates]
 
 
-    lables_bar = [row[0] for row in plot2_data]
-    values_bar = [row[1] for row in plot2_data]
+    values_bar = [row[1] for row in new_data]
     
     return render_template('expenses.html', expenses=expenses,
-                            table=table, values_bar=values_bar,lables_bar=lables_bar, values_pie = values_pie, lables_pie = lables_pie ,form=form)
+                            table=table, values_bar=values_bar,sorted_lables=sorted_lables, values_pie = values_pie, lables_pie = lables_pie ,form=form)
 
 @app.route("/income", methods=['GET', 'POST'])
 @login_required
@@ -295,7 +363,6 @@ def income():
 
     for income in plot2_list:
         element = (str(income.date),income.amount)
-        print(element)
         plot2_data.append(element)
         if income.category.name.lower() == 'salary':
             variable_salary += income.amount
@@ -315,11 +382,32 @@ def income():
     lables_pie = ['Salary','Bonus','Gift','Rent','Scholarship','Investment','Other']
     values_pie =[variable_salary,variable_bonus,variable_gift,variable_rent,variable_scholarship,variable_investment,variable_other]
 
+    print(plot2_data)
 
-    lables_bar = [row[0] for row in plot2_data]
-    values_bar = [row[1] for row in plot2_data]
+    new_data = []
 
-    return render_template('income.html', incomes=incomes, lables_bar=lables_bar,values_bar=values_bar,lables_pie=lables_pie,values_pie=values_pie,form=form)
+    for date1, value1 in plot2_data:
+        found = False
+        for i in range(len(new_data)):
+            if new_data[i][0] == date1:
+                new_data[i] = (date1, new_data[i][1] + value1)
+                found = True
+                break
+        if not found:   
+            new_data.append((date1, value1))
+
+    print(new_data)
+
+    lables_bar = list(set([row[0] for row in plot2_data]))
+
+    dates_datetime = [datetime.strptime(data, "%Y-%m-%d") for data in lables_bar]
+    sorted_dates = sorted(dates_datetime)
+    sorted_lables = [data.strftime("%Y-%m-%d") for data in sorted_dates]
+
+    values_bar = [row[1] for row in new_data]
+ 
+
+    return render_template('income.html', incomes=incomes, sorted_lables=sorted_lables,values_bar=values_bar,lables_pie=lables_pie,values_pie=values_pie,form=form)
 
 @app.route("/summary")
 @login_required

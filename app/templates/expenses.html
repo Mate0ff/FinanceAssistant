@@ -36,7 +36,7 @@
                     new Chart(ctg, {
                       type: 'bar',
                       data: {
-                        labels: {{ lables_bar | safe }},
+                        labels: {{ sorted_lables | safe }},
                         datasets: [{
                             type: 'line',
                             label: 'Linear',
