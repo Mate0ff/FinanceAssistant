@@ -12,24 +12,54 @@
     <title>Personal finance assistant</title>
 </head>
 <body>
-    <header class="app-header">
-        <div class="app-title">Personal finance assistant</div>
-    </header>
-    <nav class="app-navigation">
-        <div class="nav-elements-container">
-            <ul>
-                <li><a href="/home"><ion-icon name="home-outline" size="large"></ion-icon></a></li>
-                <li><a href="/income"><ion-icon name="person-add-outline" size="large"></ion-icon></a></li>
-                <li><a href="/expenses"><ion-icon name="person-remove-outline" size="large"></ion-icon></a></li>
-                <li><a href="/summary"><ion-icon name="stats-chart-outline" size="large"></ion-icon></a></li>
-                <li><a href="/account"><ion-icon name="person-circle-outline" size="large"></ion-icon></a></li>
-                <li><a href="/logout"><ion-icon name="log-out-outline" size="large"></ion-icon></a></li>
-            </ul>
+    <header>
+        <div class="head">
+            <a href="#">FinanceAssistant</a>
         </div>
-    </nav>
-    <main role="main">
-        {% block content %}{% endblock %}
-    </main>
+    </header>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="menu">
+                <h5>Menu</h5>
+                <ul>
+                    <li>
+                        <ion-icon name="home-outline"></ion-icon>
+                        <a href="/home">Home</ion-icon></a>
+                    </li>
+                    <li>
+                        <ion-icon name="person-add-outline"></ion-icon>
+                        <a href="/income">Income</a>
+                    </li>
+                    <li>
+                        <ion-icon name="person-remove-outline"></ion-icon>
+                        <a href="/expenses">Expense</a>
+                    </li>
+                    <li>
+                        <ion-icon name="stats-chart-outline"></ion-icon>
+                        <a href="/summary">Summary</a>
+                    </li>
+                    <li>
+                        <ion-icon name="person-circle-outline"></ion-icon>
+                        <a href="/account">Account</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="menu">
+                <ul>
+                    <li>
+                        <ion-icon name="log-out-outline"></ion-icon>
+                        <a href="/logout">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+        <main role="main">
+            <div class="right-section">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+
+    </div>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>

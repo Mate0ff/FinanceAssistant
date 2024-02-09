@@ -1,107 +1,110 @@
 {% extends "base.html" %}
 {% block content %}
-    <div class="pg-list">
-        <div class="inc-dt-container">
-            <div class="inc-date-container">
-                <div class="exp-content-section">
-                    <form method="POST" action="">
-                        {{ form.hidden_tag() }}
-                            <div class="form-group " id="exp-form-group">
-                                {% if form.date.errors %}
-                                    {{ form.date(class="form-control form-control-lg is-invalid") }}
-                                {% else %}
-                                    {{ form.date(class="form-control form-control-lg") }}
-                                {% endif %}
-                            </div>
-                            <script>
-                                document.getElementById('date-picker').addEventListener('change', function() {
-                                    this.form.submit();
-                                });
-                            </script>
-                    </form>
-                </div>
-            </div>
-            <div class="inc-title-container">
-                <h1 id="route-title">Income</h1>
-            </div>
-            <div class="inc-empty-container">
-            </div>
+<div class="empty">
+</div>
+<div class="right-section-container">
+    <div class="top-container">
+        <div>
+            <form method="POST" action="">
+                {{ form.hidden_tag() }}
+                    <div class="form-group " id="exp-form-group">
+                        {% if form.date.errors %}
+                            {{ form.date(class="form-control form-control-lg is-invalid") }}
+                        {% else %}
+                            {{ form.date(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <script>
+                        document.getElementById('date-picker').addEventListener('change', function() {
+                            this.form.submit();
+                        });
+                    </script>
+            </form>
         </div>
-        <div class="inc-plot-container">
-            <div id="inc-plot1">
-                <canvas id="barChart"></canvas>
-                <script>
-                    const ctg = document.getElementById('barChart');
-                  
-                    new Chart(ctg, {
-                      type: 'bar',
-                      data: {
-                        labels: {{ sorted_lables | safe }},
-                        datasets: [{
-                            type: 'line',
-                            label: 'Linear',
-                            data: {{ values_bar | safe }},
-                            borderColor: 'rgb(255, 99, 132)'
-                        },{
-                          label: 'Bar',
-                          data: {{ values_bar | safe }},
-                          borderWidth: 1,
-                          borderColor: 'rgb(54, 162, 235)',
-                          backgroundColor: 'rgba(54, 162, 235, 0.6)'
-                        }]
-                      },
-                      options: {
-                        scales: {
-                          y: {
-                            beginAtZero: true
-                          }
+        <div>
+            <h1 id="route-title">Income</h1>
+        </div>
+    </div>
+    <div class="plot-container">
+        <div id="inc-plot1">
+            <canvas id="barChart" style="max-height: 400px;"></canvas>
+            <script>
+                const ctg = document.getElementById('barChart');
+                
+                new Chart(ctg, {
+                    type: 'bar',
+                    data: {
+                    labels: {{ sorted_lables | safe }},
+                    datasets: [{
+                        type: 'line',
+                        label: 'Linear',
+                        data: {{ values_bar | safe }},
+                        borderColor: 'rgb(255, 99, 132)'
+                    },{
+                        label: 'Bar',
+                        data: {{ values_bar | safe }},
+                        borderWidth: 1,
+                        borderColor: 'rgb(54, 162, 235)',
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)'
+                    }]
+                    },
+                    options: {
+                    scales: {
+                        y: {
+                        beginAtZero: true
                         }
-                      }
-                    });
-                  </script>
-            </div>
-            <div id="inc-plot2">
-                <canvas id="pieChart" width="750" height="400"> </canvas>
-                <script>
-                    const ctx = document.getElementById('pieChart');
-                    
-                    new Chart(ctx, {
-                      type: 'pie',
-                      data: {
-                        labels: {{ lables_pie | safe }},
-                        datasets: [{
-                            data: {{ values_pie | safe }},
-                            backgroundColor: [
-                                '#EA738D',
-                                '#8AAAE5',
-                                'rgb(255, 205, 86)',
-                                '#EEA47F',
-                                '#CBD18F',
-                                '#317773',
-                                '#E2D1F9'
-                            ],
-                            hoverOffset: 3
-                        }]  
-                      },
-                    });
+                    }
+                    }
+                });
                 </script>
-            </div>
         </div>
-        <div class="inc-btn-container">
-            <button type="button" class="inc-btn" style="width: 38px;height: 25px;" onclick="window.location.href = '/income/new';">Add</button>
+        <div id="inc-plot2">
+            <canvas id="pieChart" style="max-height: 400px;"> </canvas>
+            <script>
+                const ctx = document.getElementById('pieChart');
+                
+                new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                    labels: {{ lables_pie | safe }},
+                    datasets: [{
+                        data: {{ values_pie | safe }},
+                        backgroundColor: [
+                            '#EA738D',
+                            '#8AAAE5',
+                            'rgb(255, 205, 86)',
+                            '#EEA47F',
+                            '#CBD18F',
+                            '#317773',
+                            '#E2D1F9'
+                        ],
+                        hoverOffset: 3
+                    }]  
+                    },
+                });
+            </script>
         </div>
-        <div class="inc-table-container">
-            <table class="inc-table" style="overflow-y: auto;">
+    </div>
+    <div class="btn-container">
+        <button type="button" class="inc-btn" style="width: 38px;height: 25px;" onclick="window.location.href = '/income/new';">Add</button>
+    </div>
+    <div class="table-container">
+        <table class="ie-table">
+            <tr>
+                <th class="inc-table-items" style="width: 60px;">Icon</th>
+                <th class="inc-table-items" style="width: 170px;">Name</th>
+                <th class="inc-table-items" style="width: 170px;">Category</th>
+                <th class="inc-table-items" style="width: 250px;"></th>
+                <th class="inc-table-items" style="width: 170px;">Date</th>
+                <th class="inc-table-items" style="width: 170px;">Amount</th>
+                <th class="inc-table-items" style="width: 300px;">Note</th>
+                <th class="inc-table-items" style="width: 100px;"></th>
+            </tr>
+            {% if not incomes %}
                 <tr>
-                    <th class="inc-table-items" style="width: 60px;">Icon</th>
-                    <th class="inc-table-items" style="width: 170px;">Name</th>
-                    <th class="inc-table-items" style="width: 170px;">Category</th>
-                    <th class="inc-table-items" style="width: 250px;"></th>
-                    <th class="inc-table-items" style="width: 170px;">Date</th>
-                    <th class="inc-table-items" style="width: 170px;">Amount</th>
-                    <th class="inc-table-items" style="width: 300px;">Note</th>
-                    <th class="inc-table-items" style="width: 100px;"></th>
+                    <td colspan="9" style="text-align: center;">No income on chosen day</td>
                 </tr>
+            {% else %}
                 {% for income in incomes %}
                 <tr>
                     <td class="inc-table-items" style="width: 60px;"><img src="{{ url_for('static', filename='inc_icons/' + income.category.name.lower() +'.png') }}" width="30" height="30"></td>
@@ -124,7 +127,8 @@
                     
                 </tr>
                 {% endfor %}
-            </table>
-        </div>
-    </div> 
+            {% endif %}
+        </table>
+    </div>
+</div> 
 {% endblock content %}

@@ -1,62 +1,36 @@
 {% extends "base.html" %}
 {% block content %}
-    <div class="pg-list">
-        <div class="sum-title">
-            <h1>Summary</h1>
+<div class="empty">
+</div>
+<div class="sum-right-section-container">
+    <div class="sum-top-container">
+        <h1>Summary</h1>
+    </div>
+    <div class="plot-container">
+        <div>
+            <h2>Date</h2>
         </div>
-        <div class="sum-text-container">
-            <div class="sum-date">
-                <h2>Date</h2>
-            </div>
-            <div class="sum-list">
-                <h2>Lista</h2>
-            </div>
-        </div>
-        <div class="sum-table-container">
-            <table class="sum-table" id="sum-table1" style="overflow-y: auto;">
-                <tr>
-                    <th class="sum-table-items" style="width: 60px;">Icon</th>
-                    <th class="sum-table-items">Lp.</th>
-                    <th class="sum-table-items"></th>
-                    <th class="sum-table-items">Category</th>
-                    <th class="sum-table-items">Amount</th>
-                </tr>
-                <tr>
-                    <td class="sum-table-items" style="width: 60px;">cell 1</td>
-                    <td class="sum-table-items">cell 2</td>
-                    <td class="sum-table-items"></td>
-                    <td class="sum-table-items">cell 4</td>
-                    <td class="sum-table-items">cell 5</td>
-                </tr>
-                <tr>
-                    <td class="sum-table-items" style="width: 60px;">cell 1</td>
-                    <td class="sum-table-items">cell 2</td>
-                    <td class="sum-table-items"></td>
-                    <td class="sum-table-items">cell 4</td>
-                    <td class="sum-table-items">cell 5</td>
-                </tr>
-                <tr>
-                    <td class="sum-table-items" style="width: 60px;">cell 1</td>
-                    <td class="sum-table-items">cell 2</td>
-                    <td class="sum-table-items"></td>
-                    <td class="sum-table-items">cell 4</td>
-                    <td class="sum-table-items">cell 5</td>
-                </tr>
-                <tr>
-                    <td class="sum-table-items" style="width: 60px;">cell 1</td>
-                    <td class="sum-table-items">cell 2</td>
-                    <td class="sum-table-items"></td>
-                    <td class="sum-table-items">cell 4</td>
-                    <td class="sum-table-items">cell 5</td>
-                </tr>
-                <tr>
-                    <td class="sum-table-items" style="width: 60px;">cell 1</td>
-                    <td class="sum-table-items">cell 2</td>
-                    <td class="sum-table-items"></td>
-                    <td class="sum-table-items">cell 4</td>
-                    <td class="sum-table-items">cell 5</td>
-                </tr>
-            </table>
+        <div>
+            <h2>Lista</h2>
         </div>
     </div>
+    <div class="sum-table-container">
+        <table class="sum-table" id="sum-table1">
+            <tr>
+                <th>Icon</th>
+                <th>Lp.</th>
+                <th></th>
+                <th>Category</th>
+                <th>Amount</th>
+            </tr>
+            <tr>
+                <td>cell 1</td>
+                <td>cell 2</td>
+                <td></td>
+                <td>cell 4</td>
+                <td>cell 5</td>
+            </tr>
+        </table>
+    </div>
+</div>
 {% endblock content %}

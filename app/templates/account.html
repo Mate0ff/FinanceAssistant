@@ -1,52 +1,49 @@
 {% extends "base.html" %}
 {% block content %}
-    <div class="pg-list">
-        <div class="acc-title">
-            <h1>Account</h1>
+<div class="empty">
+</div>
+<div class="acc-right-section-container">
+    <div class="acc-top-container">
+        <h1>Account</h1>
+    </div>
+    <div class="account-container">
+        <div class="acc-middle" id="acc-info">
+            <p>You have saved already:</p>
+            <p>20.000 $</p>
         </div>
-        <div class="acc-txav-container">
-            <div class="acc-text-container">
-                <p id="acc-txt1">You have saved already:</p>
-                <p id="acc-txt2">20.000 $</p>
-            </div>
-            <div class="acc-img-container">
-                <img src="{{ avatar }}" width="300" height="300">
-                {% if current_user.is_authenticated %}
-                    <p class="acc-img-text"  style="font-weight: 600;">{{ current_user.username }}</p>
-                {% endif %}
-            </div>
+        <div class="acc-middle">
+            <img src="{{ avatar }}" class="acc-image">
+            <p>{{ current_user.username }}</p>
         </div>
-        <div class="acc-limit-txt">
-            <h2>Monthly Limits</h2>
-        </div>
+    </div>
+    <div class="acc-text-container">
+        <h2>Monthly Limits</h2>
+    </div>
+    <div class="limit-split">
+        <div class="empty"></div>
         <div class="acc-limit-container-full">
             <div class="acc-limit-container">
-                <p class="acc-limit1">Needs</p>
-                <p class="acc-limit2">Wants</p>
-                <p class="acc-limit3">Other</p>
+                <p>Needs</p>
+                <p>Wants</p>
+                <p>Other</p>
             </div>
             <div class="acc-skill-bar-container">
                 <div class="acc-skill-bar">
-                    <span class="acc-skill-per1">
-                        <span class="acc-pb">{{ current_user.needs }}</span>
-                    </span>
+                    <span>{{ current_user.needs }}</span>
                 </div>
                 <div class="acc-skill-bar">
-                    <span class="acc-skill-per2">
-                        <span class="acc-pb">{{ current_user.wants }}</span>
-                    </span>
+                    <span>{{ current_user.wants }}</span>                 
                 </div>
-                <div class="acc-skill-bar">
-                    <span class="acc-skill-per3">
-                        <span class="acc-pb">{{ current_user.other }}</span>
-                    </span>
+                <div class="acc-skill-bar"> 
+                    <span>{{ current_user.other }}</span>
                 </div>
             </div>
-            <div class="acc-btn-container" id="acc-btn1">
+            <div class="acc-btn-container">
                 <a href="{{ url_for('update_account') }}">
                     <button type="button" class="acc-btn"  style="width: 100px;height: 25px;">Edit</button>
                 </a>
             </div>            
         </div>
     </div>
+</div>
 {% endblock content %}

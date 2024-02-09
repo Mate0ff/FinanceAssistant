@@ -1,87 +1,91 @@
 {% extends "base.html" %}
 {% block content %}
-    <div class="pg-list">
-        <div class="bal-dt-container">
-            <div class="bal-date-container">
-                <div class="exp-content-section">
-                    <form method="POST" action="">
-                        {{ form.hidden_tag() }}
-                            <div class="form-group " id="exp-form-group">
-                                {% if form.date.errors %}
-                                    {{ form.date(class="form-control form-control-lg is-invalid") }}
-                                {% else %}
-                                    {{ form.date(class="form-control form-control-lg") }}
-                                {% endif %}
-                            </div>
-                            <script>
-                                document.getElementById('date-picker').addEventListener('change', function() {
-                                    this.form.submit();
-                                });
-                            </script>
-                    </form>
-                </div>
-            </div>
-            <div class="bal-title-container">
-                <h1 id="route-title">Balance</h1>
-            </div>
-            <div class="bal-empty-container">
-            </div>
+<div class="empty">
+</div>
+<div class="right-section-container">
+    <div class="top-container">
+        <div>
+            <form method="POST" action="">
+                {{ form.hidden_tag() }}
+                    <div class="form-group " id="exp-form-group">
+                        {% if form.date.errors %}
+                            {{ form.date(class="form-control form-control-lg is-invalid") }}
+                        {% else %}
+                            {{ form.date(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <script>
+                        document.getElementById('date-picker').addEventListener('change', function() {
+                            this.form.submit();
+                        });
+                    </script>
+            </form>
         </div>
-        <div class="bal-plbal-container">
-            <div id="bal-plot1">
-                <canvas id="barChart"></canvas>
-                <script>
-                    const ctg = document.getElementById('barChart');
-                  
-                    new Chart(ctg, {
-                      type: 'bar',
-                      data: {
-                        labels: {{ sorted_lables | safe }},
-                        datasets: [{
-                          label: 'Income',
-                          data: {{ values_inc | safe }},
-                          borderWidth: 1
-                        },{
-                          label: 'Expenses',
-                          data: {{ values_exp | safe }},
-                          borderWidth: 1
-                        }]
-                      },
-                      options: {
-                        scales: {
-                          y: {
-                            beginAtZero: true
-                          }
+        <div>
+            <h1 id="route-title">Balance</h1>
+        </div>
+    </div>
+    <div class="plot-container">
+        <div id="bal-plot1">
+            <canvas id="barChart" style="max-height: 400px;"></canvas>
+            <script>
+                const ctg = document.getElementById('barChart');
+                
+                new Chart(ctg, {
+                    type: 'bar',
+                    data: {
+                    labels: {{ sorted_lables | safe }},
+                    datasets: [{
+                        label: 'Income',
+                        data: {{ values_inc | safe }},
+                        borderWidth: 1
+                    },{
+                        label: 'Expenses',
+                        data: {{ values_exp | safe }},
+                        borderWidth: 1
+                    }]
+                    },
+                    options: {
+                    scales: {
+                        y: {
+                        beginAtZero: true
                         }
-                      }
-                    });
-                  </script>
-            </div>
-            <div id="bal-balance">
-                <h2>Saldo:</h2>
-                <p style="font-weight: 700; font-size: larger;">{% if current_user.saldo == current_user.saldo|float|int %}{{ current_user.saldo|int }}{% else %}{{ current_user.saldo }}{% endif %} $</p>
-            </div>
+                    }
+                    }
+                });
+                </script>
         </div>
-        <div class="bal-table-container">
-            <table class="bal-table" style="overflow-y: auto;">
+        <div id="bal-balance">
+            <h2>Saldo:</h2>
+            <p style="font-weight: 700; font-size: larger;">{% if current_user.saldo == current_user.saldo|float|int %}{{ current_user.saldo|int }}{% else %}{{ current_user.saldo }}{% endif %} $</p>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table class="home-table" style="overflow-y: auto;">
+            <tr>
+                <th>Icon</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Type</th>
+                <th>Limit</th>
+                <th>Date</th>  
+                <th>Amount</th>
+                <th>Note</th>
+                <th></th>
+            </tr>
+            {% if not transactions %}
                 <tr>
-                    <th class="bal-table-items" style="width: 60px;">Icon</th>
-                    <th class="bal-table-items" style="width: 170px;">Name</th>
-                    <th class="bal-table-items" style="width: 170px;">Category</th>
-                    <th class="bal-table-items" style="width: 170px;">Type</th>
-                    <th class="bal-table-items" style="width: 290px;">Limit</th>
-                    <th class="bal-table-items" style="width: 170px;">Date</th>  
-                    <th class="bal-table-items" style="width: 170px;">Amount</th>
-                    <th class="bal-table-items" style="width: 300px;">Note</th>
-                    <th class="bal-table-items" style="width: 1px;"></th>
+                    <td colspan="9" style="text-align: center;">No transactions on chosen day</td>
                 </tr>
+            {% else %}
                 {% for transaction in transactions %}
                     {% if is_expense(transaction) %}
                         <tr>
-                            <td class="bal-table-items" style="width: 60px;"><img src="{{ url_for('static', filename='exp_icons/' + transaction.category.name.lower() +'.png') }}" width="30" height="30"></td>
-                            <td class="bal-table-items" style="width: 150px;" >{{ transaction.name }}</td>
-                            <td class="bal-table-items" style="width: 150px;">{{ transaction.category.name }}</td>
-                            <td class="bal-table-items" style="width: 100px;">{{ transaction.expense_type.name }}</td>
+                            <td><img src="{{ url_for('static', filename='exp_icons/' + transaction.category.name.lower() +'.png') }}" width="30" height="30"></td>
+                            <td>{{ transaction.name }}</td>
+                            <td>{{ transaction.category.name }}</td>
+                            <td>{{ transaction.expense_type.name }}</td>
                             {% for entry in table %}
                                 {% if transaction.expense_type.name.lower() == 'needs' and transaction.date.strftime('%m.%Y') == entry["date"] %}
                                     <td class="exp-table-items" style="width: 150px;">{% if entry["amount_needs"] == entry["amount_needs"]|float|int %}{{ entry["amount_needs"]|int }}{% else %}{{ entry["amount_needs"] }}{% endif %} / {{ current_user.needs }}</td>
@@ -93,26 +97,27 @@
                                 <td class="exp-table-items" style="width: 150px;">{% if entry["amount_other"] == entry["amount_other"]|float|int %}{{ entry["amount_other"]|int }}{% else %}{{ entry["amount_other"] }}{% endif %} / {{ current_user.other }}</td>
                                 {% endif %}
                             {% endfor %}
-                            <td class="bal-table-items" style="width: 150px;">{{ transaction.date.strftime('%d-%m-%Y') }}</td>
-                            <td class="bal-table-items" style="width: 150px; color: rgb(201, 25, 25); font-weight: bold;">-{% if transaction.amount == transaction.amount|float|int %}{{ transaction.amount|int }}{% else %}{{ transaction.amount }}{% endif %}$</td>
-                            <td class="bal-table-items" style="width: 320px;text-align: left;">{{ transaction.note }}</td>
-                            <td class="bal-table-items" style="width: 1px;"></td>
+                            <td>{{ transaction.date.strftime('%d-%m-%Y') }}</td>
+                            <td style = "color: rgb(201, 25, 25); font-weight: bold;">-{% if transaction.amount == transaction.amount|float|int %}{{ transaction.amount|int }}{% else %}{{ transaction.amount }}{% endif %}$</td>
+                            <td style = "text-align: left;">{{ transaction.note }}</td>
+                            <td></td>
                         </tr>
                     {% elif is_income(transaction) %}
                         <tr>
-                            <td class="bal-table-items" style="width: 60px;"><img src="{{ url_for('static', filename='inc_icons/' + transaction.category.name.lower() +'.png') }}" width="30" height="30"></td>
-                            <td class="bal-table-items" style="width: 150px;">{{ transaction.name }}</td>
-                            <td class="bal-table-items" style="width: 150px;">{{ transaction.category.name }}</td>
+                            <td><img src="{{ url_for('static', filename='inc_icons/' + transaction.category.name.lower() +'.png') }}" width="30" height="30"></td>
+                            <td>{{ transaction.name }}</td>
+                            <td>{{ transaction.category.name }}</td>
                             <td class="inc-table-items" style="width: 100px;">-</td>
                             <td class="inc-table-items" style="width: 150px;">-</td>
-                            <td class="bal-table-items" style="width: 150px;">{{ transaction.date.strftime('%d-%m-%Y') }}</td>
-                            <td class="bal-table-items" style="width: 150px;color: rgb(63, 148, 91); font-weight: bold;">+{% if transaction.amount == transaction.amount|float|int %}{{ transaction.amount|int }}{% else %}{{ transaction.amount }}{% endif %}$</td>
-                            <td class="bal-table-items" style="width: 300px;text-align: left;">{{ transaction.note }}</td>
-                            <td class="bal-table-items" style="width: 1px;"></td>
+                            <td>{{ transaction.date.strftime('%d-%m-%Y') }}</td>
+                            <td style = "color: rgb(63, 148, 91); font-weight: bold;">+{% if transaction.amount == transaction.amount|float|int %}{{ transaction.amount|int }}{% else %}{{ transaction.amount }}{% endif %}$</td>
+                            <td style = "text-align: left;">{{ transaction.note }}</td>
+                            <td></td>
                         </tr>
                     {% endif %}
                 {% endfor %}
-            </table>
-        </div>
+            {% endif %}
+        </table>
     </div>
+</div>
 {% endblock content %}

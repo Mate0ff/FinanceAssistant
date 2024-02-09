@@ -6,9 +6,9 @@ from decimal import Decimal
 from datetime import datetime
 
 class RegistrationForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired() , Length(min=2, max=20)]) 
+    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)]) 
     email = StringField('Email',validators=[DataRequired(), Email()])
-    password = PasswordField('Password',validators=[DataRequired()])
+    password = PasswordField('Password',validators=[DataRequired(), Length(min=8, max=20)])
     confirm_password = PasswordField('Confirm Password',validators=[DataRequired(),EqualTo('password')])
     gender = SelectField('Gender', choices=['Male','Female'])
     submit = SubmitField('Sign up')
@@ -23,6 +23,7 @@ class RegistrationForm(FlaskForm):
         if user:       
             raise ValidationError('There is already account with that email!')
     
+
 class LoginForm(FlaskForm):
     
     email = StringField('Email',validators=[DataRequired(), Email()])
