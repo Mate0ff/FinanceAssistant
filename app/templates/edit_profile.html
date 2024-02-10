@@ -1,53 +1,55 @@
 {% extends "base.html" %}
 {% block content %}
-    <div class="content-section" id="login-mt">
-        <form method="POST" action="">
-            {{ form.hidden_tag() }}
-            <fieldset class="form-group">
-                <legend class="ln-title">Edit limits</legend>
-                <div class="form-group">
-                    {{ form.needs.label(class="form-control-label") }}
-                    {% if form.needs.errors %}
-                        {{ form.needs(class="form-control form-control-lg is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.needs.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.needs(class="form-control form-control-lg") }}
-                    {% endif %}
-                </div>
-                <div class="form-group">
-                    {{ form.wants.label(class="form-control-label") }}
-                    {% if form.wants.errors %}
-                        {{ form.wants(class="form-control form-control-lg is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.wants.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.wants(class="form-control form-control-lg") }}
-                    {% endif %}
-                </div>
-                <div class="form-group">
-                    {{ form.other.label(class="form-control-label") }}
-                    {% if form.other.errors %}
-                        {{ form.other(class="form-control form-control-lg is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.other.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.other(class="form-control form-control-lg") }}
-                    {% endif %}
-                </div>
-            </fieldset>
+<div class="empty">
+</div>
+<div class="content-section" id="edit-acc-mt">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="ln-title">Edit limits</legend>
             <div class="form-group">
-                {{ form.submit(class="btn btn-outline-info") }}
+                {{ form.needs.label(class="form-control-label") }}
+                {% if form.needs.errors %}
+                    {{ form.needs(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.needs.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.needs(class="form-control form-control-lg") }}
+                {% endif %}
             </div>
-        </form>
-    </div>
+            <div class="form-group">
+                {{ form.wants.label(class="form-control-label") }}
+                {% if form.wants.errors %}
+                    {{ form.wants(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.wants.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.wants(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.other.label(class="form-control-label") }}
+                {% if form.other.errors %}
+                    {{ form.other(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.other.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.other(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+        </fieldset>
+        <div class="form-group">
+            {{ form.submit(class="btn") }}
+        </div>
+    </form>
+</div>
 {% endblock content %}

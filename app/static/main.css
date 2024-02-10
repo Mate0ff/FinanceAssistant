@@ -246,8 +246,8 @@ header{
 }
 
 .table-container {
-    overflow-y: auto; /* Umożliwia przewijanie tylko tabeli */
-    max-height: 190px; /* Zmniejszona maksymalna wysokość */
+    overflow-y: auto; 
+    max-height: 190px; 
     margin-bottom: 30px;
     min-height: 190px;
     border-radius: 5px; 
@@ -267,31 +267,31 @@ header{
     height: 30px;
 }
 
-/* Stylizacja nagłówków tabeli */
+
 .ie-table th, .home-table th, .sum-table th {
-    background-color: #5773ff; /* Jasnoszary tło dla nagłówków */
+    background-color: #5773ff;
     position: sticky;   
     top: 0;
     z-index: 2;
-    
+    color: black;
 }
 
 .ie-table td, .home-table td, .sum-table td{
-    padding: 3px; /* Dodaj mniejszy wewnętrzny odstęp */
-    white-space: nowrap; /* Zapobiega zawijaniu tekstu */
-    overflow: hidden; /* Ukrywa nadmiar tekstu */
-    text-overflow: ellipsis; /* Dodaje "..." gdy tekst jest za długi */
+    padding: 3px;
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis;
+    color: rgb(163, 154, 154);
 }
 
 .sum-table-container{
     display: flex;
     justify-content: center;
-    overflow-y: auto; /* Umożliwia przewijanie tylko tabeli */
+    overflow-y: auto; 
 
 }
 
 
-/* Stylizacja nagłówków tabeli, każdy nagłówek ma inną szerokość */
 .ie-table th:nth-child(1) { width: 5%; } 
 .ie-table th:nth-child(2) { width: 10%; } 
 .ie-table th:nth-child(3) { width: 10%; } 
@@ -301,7 +301,6 @@ header{
 .ie-table th:nth-child(7) { width: 10%; } 
 .ie-table th:nth-child(8) { width: 25%; } 
 .ie-table th:nth-child(9) { width: 15%; }
-
 
 .home-table th:nth-child(1) { width: 5%; } 
 .home-table th:nth-child(2) { width: 10%; } 
@@ -364,16 +363,6 @@ header{
   }
 
 
-
-
-
-
-
-
-
-
- 
-
 .content-section {
     width: 80%;
     max-width: 500px;
@@ -389,6 +378,18 @@ header{
 
 #login-mt{
     margin-top: 220px;
+}
+
+#edit-inc-mt{
+    height: 65vh;
+}
+
+#edit-exp-mt{
+    height: 73vh;
+}
+
+#edit-acc-mt{
+    height: 45vh;
 }
 
 /* Stylizacja tytułu formularza */
@@ -422,9 +423,8 @@ header{
     color: white;
 }
 
-/* Stylizacja inputów i textarea */
-.form-control {
-    width: 90%;
+
+.form-control,.form-control-p, .form-control-lg,.form-control-note{
     padding: 10px;
     font-size: 16px;
     background-color: rgba(255, 255, 255, 0.8);
@@ -433,16 +433,16 @@ header{
     color: #000000;
 }
 
+/* Stylizacja inputów i textarea */
+.form-control,.form-control-p, .form-control-lg {
+    width: 95%;
+}
 
-
-.form-control-p {
-    width: 94%;
-    padding: 10px;
-    font-size: 16px;
-    background-color: rgba(255, 255, 255, 0.8);
-    border: none;
-    border-radius: 5px;
-    color: #000000;
+.form-control-note{
+    max-width: 95%;
+    min-width: 95%;
+    min-height: 40px;
+    max-height: 40px;
 }
 
 
@@ -464,7 +464,7 @@ header{
     gap: 5px; /* Odstęp między przyciskami */
 }
 
-/* Stylizacja linku pod formularzem */
+
 .rg-text{
     color: white;
     text-decoration: none;
