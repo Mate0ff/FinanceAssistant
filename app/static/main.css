@@ -273,7 +273,7 @@ header{
     position: sticky;   
     top: 0;
     z-index: 2;
-    color: black;
+    color: rgb(255, 255, 255);
 }
 
 .ie-table td, .home-table td, .sum-table td{
@@ -363,7 +363,7 @@ header{
   }
 
 
-.content-section {
+  .content-section {
     width: 80%;
     max-width: 500px;
     margin: 50px auto;
@@ -372,25 +372,29 @@ header{
     border-radius: 10px;
     margin-top: 150px;
     position: relative;
-    left: 50px;
+}
+
+.inc-content-section, .exp-content-section{
+
+    width: 65vh;
+    max-width: 470px;
+    padding: 20px 20px 0 20px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    min-height: 72vh;
+}
+
+.test{
+    width: auto;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 
-#login-mt{
-    margin-top: 220px;
-}
 
-#edit-inc-mt{
-    height: 65vh;
-}
 
-#edit-exp-mt{
-    height: 73vh;
-}
-
-#edit-acc-mt{
-    height: 45vh;
-}
 
 /* Stylizacja tytułu formularza */
 .form-group legend {
