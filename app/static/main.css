@@ -368,7 +368,7 @@ header{
     max-width: 500px;
     margin: 50px auto;
     padding: 20px;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: #2a2a35;
     border-radius: 10px;
     margin-top: 150px;
     position: relative;
@@ -379,7 +379,7 @@ header{
     width: 65vh;
     max-width: 470px;
     padding: 20px 20px 0 20px;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: #2a2a35;
     border-radius: 10px;
     min-height: 72vh;
 }

@@ -32,8 +32,6 @@ def home():
     for i in incomes:
         incomes_all.append(i)
 
-    print(incomes_all)
-    print(expenses_all)
 
     total_expenses = sum(expense.amount for expense in expenses)
     total_incomes = sum(income.amount for income in incomes)
@@ -46,10 +44,7 @@ def home():
 
     transactions = expenses + incomes
 
-    abc = []
-
-    for trans in transactions:
-        abc.append(trans)
+    abc = transactions.copy()
 
     transactions.sort(key=lambda x: x.date, reverse=True)
     abc.sort(key=lambda x: x.date, reverse=False)
@@ -113,15 +108,12 @@ def home():
         if transaction.date.strftime("%m.%Y") == month_year: 
             lables_all.append(str(transaction.date))
             month_trans.append(transaction)
-    print("Transakcje w miesiacu")
-    print(month_trans)
+
     lables_all = list(set(lables_all))
     
     dates_datetime = [datetime.strptime(data, "%Y-%m-%d") for data in lables_all]
     sorted_dates = sorted(dates_datetime)
     sorted_lables = [data.strftime("%Y-%m-%d") for data in sorted_dates]
-    print("\nPosortowane lables")
-    print(sorted_lables)
 
     # ZBIERAM SZYSTKIE EXPENSES Z OBECNEGO MIESIACA
     for expense in expenses_all:
@@ -141,25 +133,12 @@ def home():
         inc_dt.append(str(income.date))
     inc_dt = set(inc_dt)
 
-    print(month_expenses)
-    print(month_incomes)
-
-
-    print("\nDaty wydatkow")
-    print(exp_dt)
-    print("\nDaty przychodow")
-    print(inc_dt)
 
     # Dostaje dni bez wydatkow/przychodow w miesiacu
 
     exc_incomes = list(set(lables_all).symmetric_difference(inc_dt))
     exc_expenses = list(set(lables_all).symmetric_difference(exp_dt))
 
-    print("\nDaty bez wydatkow")
-    print(exc_expenses)
-
-    print("\nDaty bez przychodow")
-    print(exc_incomes)
 
     # sprawdzam czy transakcja jest przychoden czy wydatkiem zeby wypisac ja na dobrym wykresie
 
@@ -180,12 +159,6 @@ def home():
 
     plot1_data = sorted(plot1_data, key=lambda x: x[0])
     plot2_data = sorted(plot2_data, key=lambda x: x[0])
-
-    print("\nDane wydatkow")
-    print(plot1_data)
-    print("\nDane przychodow")
-    print(plot2_data)
-
 
     # Sprawdzam czy jednego dnia sa wiecej niz 1 wydatek/przychodw
     new1_data = []
@@ -287,7 +260,6 @@ def expenses():
 
     for expense in plot2_list:
         element = (str(expense.date),expense.amount)
-        print(element)
         plot2_data.append(element)
         if expense.expense_type.name.lower() == 'needs':
             variable_needs += expense.amount
@@ -382,7 +354,6 @@ def income():
     lables_pie = ['Salary','Bonus','Gift','Rent','Scholarship','Investment','Other']
     values_pie =[variable_salary,variable_bonus,variable_gift,variable_rent,variable_scholarship,variable_investment,variable_other]
 
-    print(plot2_data)
 
     new_data = []
 
@@ -396,7 +367,6 @@ def income():
         if not found:   
             new_data.append((date1, value1))
 
-    print(new_data)
 
     lables_bar = list(set([row[0] for row in plot2_data]))
 

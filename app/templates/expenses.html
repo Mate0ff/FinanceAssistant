@@ -26,60 +26,69 @@
         </div>
     </div>
     <div class="plot-container">
-        <div id="exp-plot1">
-            <canvas id="barChart" style="max-height: 400px;"></canvas>
-            <script>
-                const ctg = document.getElementById('barChart');
-              
-                new Chart(ctg, {
-                  type: 'bar',
-                  data: {
-                    labels: {{ sorted_lables | safe }},
-                    datasets: [{
-                        type: 'line',
-                        label: 'Linear',
-                        data: {{ values_bar | safe }},
-                        borderColor: 'rgb(255, 99, 132)'
-                    },{
-                      label: 'Bar',
-                      data: {{ values_bar | safe }},
-                      borderWidth: 1,
-                      borderColor: 'rgb(54, 162, 235)',
-                      backgroundColor: 'rgba(54, 162, 235, 0.6)'
-                    }]
-                  },
-                  options: {
-                    scales: {
-                      y: {
-                        beginAtZero: true
-                      }
-                    }
-                  }
-                });
-              </script>
-        </div>
-        <div id="exp-plot2">
-            <canvas id="pieChart" style="max-height: 400px;"> </canvas>
-            <script>
-                const ctx = document.getElementById('pieChart');
+        {% if values_bar %}
+            <div id="exp-plot1">
+                <canvas id="barChart" style="max-height: 400px;"></canvas>
+                <script>
+                    const ctg = document.getElementById('barChart');
                 
-                new Chart(ctx, {
-                  type: 'pie',
-                  data: {
-                    labels: {{ lables_pie | safe }},
-                    datasets: [{
-                        data: {{ values_pie | safe }},
-                        backgroundColor: [
-                        '#EA738D',
-                            '#8AAAE5',
-                            'rgb(255, 205, 86)'
-                        ],
-                        hoverOffset: 3
-                    }]  
-                  },
-                });
-            </script>
-        </div>
+                    new Chart(ctg, {
+                    type: 'bar',
+                    data: {
+                        labels: {{ sorted_lables | safe }},
+                        datasets: [{
+                            type: 'line',
+                            label: 'Linear',
+                            data: {{ values_bar | safe }},
+                            borderColor: 'rgb(255, 99, 132)'
+                        },{
+                        label: 'Bar',
+                        data: {{ values_bar | safe }},
+                        borderWidth: 1,
+                        borderColor: 'rgb(54, 162, 235)',
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)'
+                        }]
+                    },
+                    options: {
+                        scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                        }
+                    }
+                    });
+                </script>
+            </div>
+            <div id="exp-plot2">
+                <canvas id="pieChart" style="max-height: 400px;"> </canvas>
+                <script>
+                    const ctx = document.getElementById('pieChart');
+                    
+                    new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: {{ lables_pie | safe }},
+                        datasets: [{
+                            data: {{ values_pie | safe }},
+                            backgroundColor: [
+                            '#EA738D',
+                                '#8AAAE5',
+                                'rgb(255, 205, 86)'
+                            ],
+                            hoverOffset: 3
+                        }]  
+                    },
+                    });
+                </script>
+            </div>
+        {% else %}
+            <div style="text-align: center; color: white;">
+                <p>No data</p>
+            </div>
+            <div style="text-align: center; color: white;">
+                <p>No data</p>
+            </div>
+        {% endif %}
     </div>
     <div class="btn-container">
         <button type="button" class="exp-btn" style="width: 38px;height: 25px;" onclick="window.location.href = '/expenses/new';">Add</button>
