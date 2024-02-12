@@ -57,7 +57,7 @@
         </div>
         <div id="bal-balance">
             <h2>Saldo:</h2>
-            <p style="font-weight: 700; font-size: larger;">{% if current_user.saldo == current_user.saldo|float|int %}{{ current_user.saldo|int }}{% else %}{{ current_user.saldo }}{% endif %} $</p>
+            <p style="font-size: larger;">{% if current_user.saldo == current_user.saldo|float|int %}{{ current_user.saldo|int }}{% else %}{{ current_user.saldo }}{% endif %} $</p>
         </div>
     </div>
 
