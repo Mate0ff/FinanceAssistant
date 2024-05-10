@@ -24,13 +24,8 @@ def home():
     expenses = Expense.query.filter_by(user=current_user).all()
     incomes = Income.query.filter_by(user=current_user).all()
 
-    incomes_all = []
-    expenses_all =[]
-    for i in expenses:
-        expenses_all.append(i)
-
-    for i in incomes:
-        incomes_all.append(i)
+    incomes_all = [income for income in incomes]
+    expenses_all = [expense for expense in expenses]
 
 
     total_expenses = sum(expense.amount for expense in expenses)
