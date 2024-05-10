@@ -1,10 +1,15 @@
-from flask import render_template, redirect, url_for, flash,request, session
+from flask import render_template, redirect, url_for, flash,request, session,send_file
 from app.forms import RegistrationForm, LoginForm, CreateExpenseForm, CreateIncomeForm, LimitForm,DatePickerForm
 from app.models import User, Expense, ExpenseType, ExpenseCategory, IncomeCategory, Income
 from app import app, db, bcrypt
 from flask_login import login_user, current_user, logout_user, login_required
 from datetime import date, datetime
-
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from reportlab.lib import colors
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+import os
 
 @app.context_processor
 def utility_processor():
@@ -531,3 +536,47 @@ def update_account():
     form.other.data = user.other
     return render_template('edit_profile.html',form=form)
 
+def generate_pdf():
+    # Ustalamy ścieżkę do folderu projektu
+    project_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    file_name = os.path.join(project_folder, "custom_raport.pdf")
+    doc = SimpleDocTemplate(file_name, pagesize=letter)
+    flowables = []
+
+    # Tworzymy dane tabeli
+    data = [['Imię', 'Nazwisko', 'Wiek'],
+            ['John', 'Doe', 30],
+            ['Jane', 'Smith', 25],
+            ['Adam', 'Johnson', 35]]
+
+    # Tworzymy tabelę i definiujemy styl
+    table = Table(data)
+    style = TableStyle([('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                        ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+                        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+                        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+                        ('GRID', (0, 0), (-1, -1), 1, colors.black)])
+
+    styles = getSampleStyleSheet()
+
+    centered_title = Paragraph("To jest test", styles['Title'])
+    flowables.append(centered_title)
+
+    left_text = Paragraph("To jest tabela", styles['Normal'])
+    flowables.append(left_text)
+
+    table.setStyle(style)
+    flowables.append(table)
+
+
+    doc.build(flowables)
+
+    return file_name
+
+@app.route("/download_pdf")
+def download_pdf():
+    file_name = generate_pdf()
+    send_file(file_name, as_attachment=True)
+    return redirect(url_for('home'))
