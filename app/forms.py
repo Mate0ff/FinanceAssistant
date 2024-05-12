@@ -1,9 +1,10 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, IntegerField, TextAreaField, DateField, DecimalField
 from wtforms.validators import DataRequired, Length, Email, EqualTo,ValidationError, NumberRange
+from wtforms_components import DateRange
 from app.models import User
 from decimal import Decimal
-
+from datetime import date
 
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)]) 
@@ -79,5 +80,11 @@ class CreateExpenseForm(FlaskForm):
 class DatePickerForm(FlaskForm):
     date = DateField('Date',id='date-picker')
 
+class PdfDatePickerForm(FlaskForm):
+    from_date = DateField('From', validators=[DateRange(max=date.today())])
+    to_date = DateField('To', validators=[DateRange(max=date.today())])
+    submit = SubmitField('Create')
 
-
+    def validate_to_date(self, to_date):
+        if to_date.data <= self.from_date.data:
+            raise ValidationError("The 'To' date must be later than the 'From' date.")

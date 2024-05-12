@@ -1,5 +1,5 @@
 from flask import render_template, redirect, url_for, flash,request, session,send_file
-from app.forms import RegistrationForm, LoginForm, CreateExpenseForm, CreateIncomeForm, LimitForm,DatePickerForm
+from app.forms import RegistrationForm, LoginForm, CreateExpenseForm, CreateIncomeForm, LimitForm,DatePickerForm, PdfDatePickerForm
 from app.models import User, Expense, ExpenseType, ExpenseCategory, IncomeCategory, Income
 from app import app, db, bcrypt
 from app.pdf_utils import generate_pdf
@@ -533,9 +533,27 @@ def update_account():
     return render_template('edit_profile.html',form=form)
 
 
-@app.route("/download_pdf")
+@app.route("/create_raport", methods=['GET', 'POST'])
 @login_required
-def download_pdf():
-    file_name = generate_pdf()
-    send_file(file_name, as_attachment=True)
-    return redirect(url_for('home'))
+def create_raport():
+    form = PdfDatePickerForm()
+
+    if form.validate_on_submit():
+        from_date = form.from_date.data
+        to_date = form.to_date.data
+
+        all_expenses = Expense.query.filter(
+        Expense.user == current_user,
+        Expense.date >= from_date,
+        Expense.date <= to_date).all()
+
+        all_incomes = Income.query.filter(
+        Income.user == current_user,
+        Income.date >= from_date,
+        Income.date <= to_date).all()
+
+        file_name = generate_pdf(from_date=from_date,to_date=to_date,all_expenses=all_expenses,all_incomes=all_incomes)
+        send_file(file_name, as_attachment=True)
+        return redirect(url_for('summary'))
+    
+    return render_template('create_report.html', form=form)  
