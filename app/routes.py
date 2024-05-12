@@ -533,9 +533,9 @@ def update_account():
     return render_template('edit_profile.html',form=form)
 
 
-@app.route("/create_raport", methods=['GET', 'POST'])
+@app.route("/create_report", methods=['GET', 'POST'])
 @login_required
-def create_raport():
+def create_report():
     form = PdfDatePickerForm()
 
     if form.validate_on_submit():
