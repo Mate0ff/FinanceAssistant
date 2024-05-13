@@ -22,32 +22,36 @@ def utility_processor():
 @app.route("/home", methods=['GET', 'POST'])
 @login_required
 def home():
+    # Getting all expenses and incomes
     expenses = Expense.query.filter_by(user=current_user).all()
     incomes = Income.query.filter_by(user=current_user).all()
 
     incomes_all = [income for income in incomes]
     expenses_all = [expense for expense in expenses]
 
-
+    # Getting agregate values of expenses and incomes
     total_expenses = sum(expense.amount for expense in expenses)
     total_incomes = sum(income.amount for income in incomes)
 
+    # Getting expneses according to their type
     exp_needs = Expense.query.filter_by(user=current_user, type_id=1).all()
     exp_wants = Expense.query.filter_by(user=current_user, type_id=2).all()
     exp_other = Expense.query.filter_by(user=current_user, type_id=3).all()
 
+    # Calcualting balance and commiting it to data base
     balance = total_incomes - total_expenses
-
-    transactions = expenses + incomes
-
-    trans_copy = transactions.copy()
-
-    transactions.sort(key=lambda x: x.date, reverse=True)
-    trans_copy.sort(key=lambda x: x.date, reverse=False)
-
     current_user.saldo = round(balance, 2)
     db.session.commit()
 
+    # All transactions in one variable
+    transactions = expenses + incomes
+    trans_copy = transactions.copy()
+
+    # Sorting by date
+    transactions.sort(key=lambda x: x.date, reverse=True)
+    trans_copy.sort(key=lambda x: x.date, reverse=False)
+
+    # Additional variables
     table = []
     set_variable = set()
 
@@ -78,6 +82,7 @@ def home():
 
     month_year = date.today().strftime('%m.%Y')
    
+    # Validating form
     if form.validate_on_submit():
         selected_date = form.date.data
         month_year = selected_date.strftime('%m.%Y')
@@ -86,6 +91,7 @@ def home():
         transactions = expenses + incomes
         transactions.sort(key=lambda x: x.date, reverse=True)
     
+    # Addidtional variables
     lables_all = []
 
     month_trans = []
@@ -99,7 +105,7 @@ def home():
     inc_dt = []
 
 
-    # LISTA Z DATA WSZYSTKICH TRANSAKCJI W OBECNYM MIESIACU
+    # Dates of every transaction in current month
     for transaction in trans_copy:
         if transaction.date.strftime("%m.%Y") == month_year: 
             lables_all.append(str(transaction.date))
@@ -111,7 +117,7 @@ def home():
     sorted_dates = sorted(dates_datetime)
     sorted_lables = [data.strftime("%Y-%m-%d") for data in sorted_dates]
 
-    # ZBIERAM SZYSTKIE EXPENSES Z OBECNEGO MIESIACA
+    # Gathering all expenses from current month
     for expense in expenses_all:
         if expense.date.strftime("%m.%Y") == month_year:  
             month_expenses.append(expense)
@@ -120,7 +126,7 @@ def home():
         exp_dt.append(str(expense.date))
     exp_dt = set(exp_dt)
 
-    # ZBIERAM SZYSTKIE INCOMES Z OBECNEGO MIESIACA
+    # Gathering all incomes from current month
     for income in incomes_all:
         if income.date.strftime("%m.%Y") == month_year:  
             month_incomes.append(income)
@@ -130,21 +136,17 @@ def home():
     inc_dt = set(inc_dt)
 
 
-    # Dostaje dni bez wydatkow/przychodow w miesiacu
-
+    # Days without expenses/incomes in current month
     exc_incomes = list(set(lables_all).symmetric_difference(inc_dt))
     exc_expenses = list(set(lables_all).symmetric_difference(exp_dt))
 
 
-    # sprawdzam czy transakcja jest przychoden czy wydatkiem zeby wypisac ja na dobrym wykresie
-
+    # Check wheter transaction is an expense or and income, assigning it to respective plot
     for trans in month_trans:
         if  isinstance(trans, Expense):
              plot1_data.append((str(trans.date),trans.amount))
         elif isinstance(trans, Income):		
             plot2_data.append((str(trans.date),trans.amount))
-
-    
 
     for i in exc_expenses:
         plot1_data.append((str(i),0))
@@ -156,7 +158,7 @@ def home():
     plot1_data = sorted(plot1_data, key=lambda x: x[0])
     plot2_data = sorted(plot2_data, key=lambda x: x[0])
 
-    # Sprawdzam czy jednego dnia sa wiecej niz 1 wydatek/przychodw
+    # Checking if there is more than one expense/income in one day to sum their values
     new1_data = []
     new2_data = []
 
@@ -180,11 +182,10 @@ def home():
         if not found:
             new2_data.append((date2, value2))
 
-
+    # Values for the plots
     values_exp = [row[1] for row in new1_data]
     values_inc = [row[1] for row in new2_data]
 
-        
     return render_template('home.html', transactions=transactions,sorted_lables=sorted_lables,
                             values_exp=values_exp,values_inc=values_inc,table=table,form=form)
 
