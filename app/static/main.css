@@ -349,12 +349,10 @@ header{
 
 
 .exp-btn, .inc-btn, .acc-btn{
-    background: #555050;
+    background-color: rgba(255, 255, 255, 0.8);
     border-radius: 6px;
     border: none;
 
-    box-shadow: 0 0 3px rgb(163, 163, 163);
-    color: #DFDEDF;
 }
   
 .exp-btn:focus, .inc-btn:focus, .acc-btn:focus {
@@ -428,7 +426,7 @@ header{
 }
 
 
-.form-control,.form-control-p, .form-control-lg,.form-control-note{
+.form-control,.form-control-p, .form-control-lg,.form-control-note, .form-control-rp{
     padding: 10px;
     font-size: 16px;
     background-color: rgba(255, 255, 255, 0.8);
@@ -438,7 +436,7 @@ header{
 }
 
 /* Stylizacja inputów i textarea */
-.form-control,.form-control-p, .form-control-lg {
+.form-control,.form-control-p, .form-control-lg, .form-control-rp {
     width: 95%;
 }
 
@@ -454,7 +452,7 @@ header{
     color: white;
 }
 
-/* Stylizacja przycisku */
+
 .btn {
     padding: 10px 20px;
     font-size: 18px;
@@ -465,7 +463,7 @@ header{
 
 .button-container {
     display: flex;
-    gap: 5px; /* Odstęp między przyciskami */
+    gap: 2px; 
 }
 
 

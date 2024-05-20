@@ -1,44 +1,37 @@
 {% extends "base.html" %}
 {% block content %}
-<main role="main">
-    {% with messages = get_flashed_messages(category_filter=["register"]) %}
-    {% if messages %}
-        {% for message in messages %}
-            <div class="li-message">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endif %}
-    {% endwith %}
+<div class="empty">
+</div>
+<div class="right-section-container">
     <div class="content-section" id="login-mt">
         <form method="POST" action="">
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
-                <legend class="ln-title">Date Range Picker</legend>
+                <legend class="ln-title">Custom report</legend>
                 <div class="form-group">
                     {{ form.from_date.label(class="form-control-label") }}
                     {% if form.from_date.errors %}
-                        {{ form.from_date(class="form-control form-control-lg is-invalid") }}
+                        {{ form.from_date(class="form-control form-control-rp is-invalid") }}
                         <div class="invalid-feedback">
                             {% for error in form.from_date.errors %}
                                 <span>{{ error }}</span>
                             {% endfor %}
                         </div>
                     {% else %}
-                        {{ form.from_date(class="form-control form-control-lg") }}
+                        {{ form.from_date(class="form-control form-control-rp") }}
                     {% endif %}
                 </div>
                 <div class="form-group">
                     {{ form.to_date.label(class="form-control-label") }}
                     {% if form.to_date.errors %}
-                        {{ form.to_date(class="form-control form-control-lg is-invalid") }}
+                        {{ form.to_date(class="form-control form-control-rp is-invalid") }}
                         <div class="invalid-feedback">
                             {% for error in form.to_date.errors %}
                                 <span>{{ error }}</span>
                             {% endfor %}
                         </div>
                     {% else %}
-                        {{ form.to_date(class="form-control form-control-lg") }}
+                        {{ form.to_date(class="form-control form-control-rp") }}
                     {% endif %}
                 </div>
             </fieldset>
@@ -47,6 +40,6 @@
             </div>
         </form>
     </div>
-</main>
+</div>
 
 {% endblock content %}

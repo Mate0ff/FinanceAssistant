@@ -62,7 +62,7 @@ def generate_pdf(from_date,to_date,all_expenses, all_incomes):
     period = Paragraph("<b>Reporting Period:</b>", styles['Heading2'])
     flowables.append(period) 
 
-    peroid_txt = Paragraph(f"From: {from_date}, to: {to_date}",styles['Normal'])
+    peroid_txt = Paragraph(f"From: {from_date}<br/>To: {to_date}",styles['Normal'])
     flowables.append(peroid_txt) 
 
     # Summary
@@ -102,19 +102,24 @@ def generate_pdf(from_date,to_date,all_expenses, all_incomes):
 
     count_income_txt = Paragraph(f"Count: {len(all_incomes)}",styles['Normal'])
     flowables.append(count_income_txt)
+    flowables.append(Spacer(1, 5)) 
 
     min_income_txt = Paragraph(f"Min: {format_amount(min_income)}",styles['Normal'])
     flowables.append(min_income_txt)
+    flowables.append(Spacer(1, 5)) 
 
     max_income_txt = Paragraph(f"Max: {format_amount(max_income)}",styles['Normal'])
     flowables.append(max_income_txt)
+    flowables.append(Spacer(1, 5)) 
     
     mean_income_txt = Paragraph(f"Mean: {format_amount(round(mean_income,2))}",styles['Normal'])
     flowables.append(mean_income_txt)
+    flowables.append(Spacer(1, 5)) 
 
     std_income_txt = Paragraph(f"Standard deviation: {format_amount(round(std_income,2))}",styles['Normal'])
     flowables.append(std_income_txt)
-
+    flowables.append(Spacer(1, 5)) 
+    
     median_income_txt = Paragraph(f"Median: {format_amount(round(median_income,2))}",styles['Normal'])
     flowables.append(median_income_txt)
 
@@ -165,21 +170,27 @@ def generate_pdf(from_date,to_date,all_expenses, all_incomes):
     # Desctriptive statisctics for expenses
     stat_expense_txt = Paragraph("<b>Descriptive statistics:</b>", styles['Heading3'])
     flowables.append(stat_expense_txt)
+    flowables.append(Spacer(1, 5)) 
 
     count_expense_txt = Paragraph(f"Count: {len(all_expenses)}",styles['Normal'])
     flowables.append(count_expense_txt)
+    flowables.append(Spacer(1, 5)) 
 
     min_expense_txt = Paragraph(f"Min: {format_amount(min_expense)}",styles['Normal'])
     flowables.append(min_expense_txt)
+    flowables.append(Spacer(1, 5)) 
 
     max_expense_txt = Paragraph(f"Max: {format_amount(max_expense)}",styles['Normal'])
     flowables.append(max_expense_txt)
+    flowables.append(Spacer(1, 5)) 
 
     mean_expense_txt = Paragraph(f"Mean: {format_amount(round(mean_expense,2))}",styles['Normal'])
     flowables.append(mean_expense_txt)
+    flowables.append(Spacer(1, 5)) 
 
     std_expense_txt = Paragraph(f"Standard deviation: {format_amount(round(std_expense,2))}",styles['Normal'])
     flowables.append(std_expense_txt)
+    flowables.append(Spacer(1, 5)) 
 
     median_expense_txt = Paragraph(f"Median: {format_amount(round(median_expense,2))}",styles['Normal'])
     flowables.append(median_expense_txt)
@@ -211,17 +222,14 @@ def generate_pdf(from_date,to_date,all_expenses, all_incomes):
         flowables.append(Spacer(1, 5))   
 
     flowables.append(Spacer(1, 20)) 
+
     # Final Summary
-    final_summary = Paragraph("<b>Final Summary:</b>", styles['Normal'])
+    final_summary = Paragraph("<b>Balance:</b>", styles['Heading2'])
     flowables.append(final_summary)
 
-    flowables.append(Spacer(1, 20)) 
-
-    # Final summary
-    final_summary_details_text = f"Total Income: [{format_amount(total_income)}]<br/>Total Expenses: [{format_amount(total_expenses)}]<br/>Net Balance: [{format_amount(total_income-total_expenses)}]"
+    final_summary_details_text = f"Total Income: {format_amount(total_income)}<br/>Total Expenses: {format_amount(total_expenses)}<br/>Net Balance: {format_amount(total_income-total_expenses)}"
     final_summary_details = Paragraph(final_summary_details_text, styles['Normal'])
     flowables.append(final_summary_details)
-
 
     doc.build(flowables)
 

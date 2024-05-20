@@ -65,7 +65,7 @@ class CreateExpenseForm(FlaskForm):
     type = SelectField('Type', choices=['Needs','Wants','Other'])
     date = DateField('Date')
     amount = DecimalField('Amount',places=2, validators=[DataRequired(),NumberRange(min=0.01)])
-    note = TextAreaField('Note', validators=[DataRequired(), Length(min=2,max=45)])
+    note = TextAreaField('Note', validators=[Length(min=0,max=45)])
 
     submit = SubmitField('Create')
 
@@ -76,6 +76,10 @@ class CreateExpenseForm(FlaskForm):
                 raise ValidationError('Amount must have at most 2 decimal places')
         except:
             raise ValidationError('Invalid amount format')
+        
+    def validate_date(self, field):
+        if field.data > date.today():
+            raise ValidationError("Date cannot be in the future.")   
     
 class DatePickerForm(FlaskForm):
     date = DateField('Date',id='date-picker')
